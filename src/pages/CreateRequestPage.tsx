@@ -329,7 +329,7 @@ export default function CreateRequestPage() {
         />
       )}
 
-      {shareRequest && <ShareStoryModal request={shareRequest} referralCode={profile?.referral_code} onClose={() => { setShareRequest(null); navigate('/my-requests') }} />}
+      {shareRequest && <ShareStoryModal request={shareRequest} referralCode={profile?.referral_code} onClose={() => { setShareRequest(null); navigate('/dashboard') }} />}
 
       {insufficientOpen && (
         <div className="modal-backdrop" onClick={e => e.target === e.currentTarget && setInsufficientOpen(false)}>
@@ -355,7 +355,7 @@ export default function CreateRequestPage() {
                 <button className="btn-secondary" onClick={() => setInsufficientOpen(false)} style={{ flex: 1, padding: '12px', fontSize: 14 }}>
                   Cancel
                 </button>
-                <button className="btn-primary" onClick={() => { setInsufficientOpen(false); navigate('/wallet') }} style={{ flex: 1, padding: '12px', fontSize: 14 }}>
+                <button className="btn-primary" onClick={() => { setInsufficientOpen(false); navigate('/dashboard') }} style={{ flex: 1, padding: '12px', fontSize: 14 }}>
                   Go to Wallet →
                 </button>
               </div>

@@ -6,8 +6,10 @@ import type { Request } from '../lib/types'
 import RequestCard from '../components/RequestCard'
 import DonateModal from '../components/DonateModal'
 import Leaderboard from '../components/Leaderboard'
+import GlobalLeaderboard from '../components/GlobalLeaderboard'
 
 type Filter = 'all' | 'active' | 'funded'
+type Tab = 'requests' | 'leaderboard'
 
 export default function ExplorePage() {
   const { user } = useAuth()
@@ -18,6 +20,7 @@ export default function ExplorePage() {
   const [filter, setFilter] = useState<Filter>('all')
   const [selected, setSelected] = useState<Request | null>(null)
   const [search, setSearch] = useState('')
+  const [tab, setTab] = useState<Tab>('requests')
 
   const fetchRequests = async () => {
     try {
@@ -89,7 +92,7 @@ export default function ExplorePage() {
               <button className="btn-primary" onClick={() => user ? navigate('/create') : navigate('/signup')} style={{ fontSize: 15, padding: '12px 28px' }}>
                 Create a Request
               </button>
-              <button className="btn-secondary" onClick={() => document.getElementById('requests-grid')?.scrollIntoView({ behavior: 'smooth' })}>
+              <button className="btn-secondary" onClick={() => { setTab('requests'); document.getElementById('requests-grid')?.scrollIntoView({ behavior: 'smooth' }) }}>
                 Browse Requests ↓
               </button>
             </div>
@@ -114,45 +117,66 @@ export default function ExplorePage() {
         </div>
       </div>
 
-      <div id="requests-grid" style={{ padding: '28px 0 0' }}>
+      {/* Tab switcher */}
+      <div style={{ padding: '20px 0 0' }}>
         <div className="page-container">
-          <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap', marginBottom: 28 }}>
-            <div style={{ display: 'flex', gap: 8 }}>
-              {(['all', 'active', 'funded'] as Filter[]).map(f => (
-                <button key={f} className={`chip ${filter === f ? 'active' : ''}`} onClick={() => setFilter(f)}>
-                  {f === 'all' ? 'All' : f === 'active' ? 'Active' : 'Funded'}
-                </button>
-              ))}
-            </div>
-            <input type="text" placeholder="Search requests..." value={search} onChange={e => setSearch(e.target.value)}
-              className="field-input" style={{ maxWidth: 260, padding: '8px 14px', fontSize: 13 }} />
+          <div style={{ display: 'flex', gap: 8, marginBottom: 24 }}>
+            <button className={`chip ${tab === 'requests' ? 'active' : ''}`} onClick={() => setTab('requests')} style={{ padding: '8px 20px', fontSize: 14 }}>
+              Requests
+            </button>
+            <button className={`chip ${tab === 'leaderboard' ? 'active' : ''}`} onClick={() => setTab('leaderboard')} style={{ padding: '8px 20px', fontSize: 14 }}>
+              Leaderboard
+            </button>
           </div>
-
-          {loading ? (
-            <div className="grid-cards">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="skeleton" style={{ height: 340, borderRadius: 16 }} />
-              ))}
-            </div>
-          ) : filtered.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '80px 0', color: 'var(--text-muted)' }}>
-              <div style={{ fontSize: 48, marginBottom: 16, opacity: 0.3 }}>★</div>
-              <div style={{ fontSize: 18, fontWeight: 600, marginBottom: 8 }}>No requests found</div>
-              <div style={{ fontSize: 14 }}>{search ? 'Try a different search term.' : 'Be the first to create a request!'}</div>
-              <button className="btn-primary" onClick={() => user ? navigate('/create') : navigate('/signup')} style={{ marginTop: 24 }}>
-                Create a Request
-              </button>
-            </div>
-          ) : (
-            <div className="grid-cards">
-              {filtered.map(r => <RequestCard key={r.id} request={r} onClick={() => handleCardClick(r)} />)}
-            </div>
-          )}
         </div>
       </div>
 
+      {tab === 'requests' ? (
+        <>
+          <div id="requests-grid" style={{ padding: '8px 0 0' }}>
+            <div className="page-container">
+              <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap', marginBottom: 28 }}>
+                <div style={{ display: 'flex', gap: 8 }}>
+                  {(['all', 'active', 'funded'] as Filter[]).map(f => (
+                    <button key={f} className={`chip ${filter === f ? 'active' : ''}`} onClick={() => setFilter(f)}>
+                      {f === 'all' ? 'All' : f === 'active' ? 'Active' : 'Funded'}
+                    </button>
+                  ))}
+                </div>
+                <input type="text" placeholder="Search requests..." value={search} onChange={e => setSearch(e.target.value)}
+                  className="field-input" style={{ maxWidth: 260, padding: '8px 14px', fontSize: 13 }} />
+              </div>
+
+              {loading ? (
+                <div className="grid-cards">
+                  {Array.from({ length: 6 }).map((_, i) => (
+                    <div key={i} className="skeleton" style={{ height: 340, borderRadius: 16 }} />
+                  ))}
+                </div>
+              ) : filtered.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '80px 0', color: 'var(--text-muted)' }}>
+                  <div style={{ fontSize: 48, marginBottom: 16, opacity: 0.3 }}>★</div>
+                  <div style={{ fontSize: 18, fontWeight: 600, marginBottom: 8 }}>No requests found</div>
+                  <div style={{ fontSize: 14 }}>{search ? 'Try a different search term.' : 'Be the first to create a request!'}</div>
+                  <button className="btn-primary" onClick={() => user ? navigate('/create') : navigate('/signup')} style={{ marginTop: 24 }}>
+                    Create a Request
+                  </button>
+                </div>
+              ) : (
+                <div className="grid-cards">
+                  {filtered.map(r => <RequestCard key={r.id} request={r} onClick={() => handleCardClick(r)} />)}
+                </div>
+              )}
+            </div>
+          </div>
+
+          <Leaderboard />
+        </>
+      ) : (
+        <GlobalLeaderboard />
+      )}
+
       {selected && <DonateModal request={selected} onClose={() => setSelected(null)} onDonated={fetchRequests} />}
-      <Leaderboard />
     </div>
   )
 }

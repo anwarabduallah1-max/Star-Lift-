@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import { ToastProvider } from './context/ToastContext'
 import { isSupabaseReady } from './lib/supabase'
@@ -8,11 +8,8 @@ import ExplorePage from './pages/ExplorePage'
 import CreateRequestPage from './pages/CreateRequestPage'
 import LoginPage from './pages/LoginPage'
 import SignupPage from './pages/SignupPage'
-import WalletPage from './pages/WalletPage'
-import MyRequestsPage from './pages/MyRequestsPage'
-import ReferralsPage from './pages/ReferralsPage'
+import DashboardPage from './pages/DashboardPage'
 import ProfilePage from './pages/ProfilePage'
-import LeaderboardPage from './pages/LeaderboardPage'
 
 export default function App() {
   if (!isSupabaseReady) {
@@ -44,11 +41,13 @@ export default function App() {
             <Route path="/create" element={<CreateRequestPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
-            <Route path="/wallet" element={<WalletPage />} />
-            <Route path="/my-requests" element={<MyRequestsPage />} />
-            <Route path="/referrals" element={<ReferralsPage />} />
+            <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/profile" element={<ProfilePage />} />
-            <Route path="/leaderboard" element={<LeaderboardPage />} />
+            {/* Redirect old routes to consolidated pages */}
+            <Route path="/wallet" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/my-requests" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/referrals" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/leaderboard" element={<Navigate to="/" replace />} />
           </Routes>
         </BrowserRouter>
       </ToastProvider>
