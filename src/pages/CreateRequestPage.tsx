@@ -3,10 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
-import { MANDATORY_DONATION_POST_ID, MANDATORY_MIN_DONATION, PLATFORM_FEE } from '../lib/config'
+import { PLATFORM_FEE } from '../lib/config'
 import type { Request } from '../lib/types'
-import DonationGateModal from '../components/DonationGateModal'
-import DonateModal from '../components/DonateModal'
 import ShareStoryModal from '../components/ShareStoryModal'
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024
@@ -32,94 +30,15 @@ export default function CreateRequestPage() {
   const [dragOver, setDragOver] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const [featuredReq, setFeaturedReq] = useState<Request | null>(null)
-  const [featuredDonationSum, setFeaturedDonationSum] = useState<number | null>(null)
-  const [gateOpen, setGateOpen] = useState(false)
-  const [donateOpen, setDonateOpen] = useState(false)
-  const [payingFee, setPayingFee] = useState(false)
-  const [insufficientOpen, setInsufficientOpen] = useState(false)
   const [shareRequest, setShareRequest] = useState<Request | null>(null)
 
   useEffect(() => {
-    if (!user) return
-    let cancelled = false
-    ;(async () => {
-      try {
-        const [{ data: donations }, { data: req }] = await Promise.all([
-          supabase.from('transactions').select('stars_amount').eq('donor_id', user.id).eq('request_id', MANDATORY_DONATION_POST_ID),
-          supabase.from('requests').select('*').eq('id', MANDATORY_DONATION_POST_ID).maybeSingle(),
-        ])
-        if (cancelled) return
-        const sum = (donations ?? []).reduce((s, t: { stars_amount: number }) => s + (t.stars_amount ?? 0), 0)
-        setFeaturedDonationSum(sum)
-        setFeaturedReq(req as Request | null)
-      } catch (err) {
-        console.error('Featured campaign fetch error:', err)
-        if (!cancelled) setFeaturedDonationSum(0)
-      }
-    })()
-    return () => { cancelled = true }
-  }, [user])
-
-  // Re-check donation sum after returning from a donation
-  const refreshDonationSum = async () => {
-    if (!user) return
-    try {
-      const { data: donations } = await supabase
-        .from('transactions')
-        .select('stars_amount')
-        .eq('donor_id', user.id)
-        .eq('request_id', MANDATORY_DONATION_POST_ID)
-      const sum = (donations ?? []).reduce((s, t: { stars_amount: number }) => s + (t.stars_amount ?? 0), 0)
-      setFeaturedDonationSum(sum)
-    } catch (err) {
-      console.error('Refresh donation sum error:', err)
-    }
-  }
-
-  const blockedFromPosting = featuredDonationSum !== null && featuredDonationSum < MANDATORY_MIN_DONATION
-  const remainingToDonate = featuredDonationSum !== null ? Math.max(MANDATORY_MIN_DONATION - featuredDonationSum, 0) : MANDATORY_MIN_DONATION
+    if (!user) { navigate('/login'); return }
+  }, [user, navigate])
 
   const base = parseFloat(baseTarget) || 0
   const fee = base * PLATFORM_FEE
   const finalTarget = base + fee
-
-  // FIX: The "Support featured campaign first" button now directly opens the DonateModal
-  // for the BMW post — no redirect needed, the user can donate right here.
-  const handleSupportFeatured = () => {
-    if (featuredReq) {
-      setGateOpen(false)
-      setDonateOpen(true)
-    } else {
-      navigate('/')
-    }
-  }
-
-  // Pay the platform fee directly via RPC — deducts 5 stars and records it
-  const handlePayPlatformFee = async () => {
-    if (!user) return
-    const balance = profile?.stars_balance ?? 0
-    if (balance < MANDATORY_MIN_DONATION) {
-      setInsufficientOpen(true)
-      return
-    }
-    setPayingFee(true)
-    try {
-      const { error } = await supabase.rpc('pay_platform_fee')
-      if (error) {
-        showToast(error.message, 'error')
-      } else {
-        showToast('Platform fee paid! You can now publish your campaign.', 'success')
-        await refreshProfile()
-        await refreshDonationSum()
-      }
-    } catch (err) {
-      console.error('Pay fee error:', err)
-      showToast('Failed to pay platform fee. Please try again.', 'error')
-    } finally {
-      setPayingFee(false)
-    }
-  }
 
   const validateFile = (file: File): boolean => {
     if (!ACCEPTED_TYPES.includes(file.type)) { showToast('Please choose a JPG, PNG, WEBP, or GIF image.', 'error'); return false }
@@ -142,19 +61,6 @@ export default function CreateRequestPage() {
 
     setLoading(true)
     try {
-      const { data: donations } = await supabase
-        .from('transactions')
-        .select('stars_amount')
-        .eq('donor_id', user.id)
-        .eq('request_id', MANDATORY_DONATION_POST_ID)
-      const sum = (donations ?? []).reduce((s, t: { stars_amount: number }) => s + (t.stars_amount ?? 0), 0)
-
-      if (sum < MANDATORY_MIN_DONATION) {
-        setLoading(false)
-        setGateOpen(true)
-        return
-      }
-
       let finalImageUrl = imageUrl.trim()
       if (imageMode === 'upload' && uploadedFile) {
         setUploading(true)
@@ -257,30 +163,8 @@ export default function CreateRequestPage() {
               <p style={{ margin: '8px 0 0', fontSize: 12, color: 'var(--text-muted)' }}>This is how many Stars you want to raise (1 Star = 1 USDT)</p>
             </div>
 
-            {blockedFromPosting && (
-              <div style={{
-                padding: '14px 16px', background: 'rgba(240,96,96,0.08)', border: '1px solid rgba(240,96,96,0.3)',
-                borderRadius: 10, display: 'flex', flexDirection: 'column', gap: 10,
-              }}>
-                <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--error)' }}>Support the Official Platform Campaign first</div>
-                <div style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.5 }}>
-                  You've donated <span style={{ fontWeight: 700, color: 'var(--text-primary)' }}>★ {featuredDonationSum?.toFixed(0) ?? 0}</span> of the
-                  minimum <span style={{ fontWeight: 700, color: 'var(--accent)' }}>★ {MANDATORY_MIN_DONATION}</span> required.
-                  {remainingToDonate > 0 && <> Donate <span style={{ fontWeight: 700, color: 'var(--accent)' }}>★ {remainingToDonate}</span> more to unlock posting.</>}
-                </div>
-                <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-                  <button type="button" className="btn-primary" onClick={handlePayPlatformFee} disabled={payingFee} style={{ padding: '10px 20px', fontSize: 14 }}>
-                    {payingFee ? 'Processing...' : 'Pay Platform Fee (★ 5)'}
-                  </button>
-                  <button type="button" className="btn-secondary" onClick={handleSupportFeatured} style={{ padding: '10px 20px', fontSize: 14 }}>
-                    Donate Custom →
-                  </button>
-                </div>
-              </div>
-            )}
-
-            <button type="submit" className="btn-primary" disabled={loading || blockedFromPosting || !title.trim() || base <= 0 || (imageMode === 'upload' && uploading)} style={{ width: '100%', padding: '14px', fontSize: 15 }}>
-              {uploading ? 'Uploading image...' : loading ? 'Creating...' : blockedFromPosting ? 'Support featured campaign first' : 'Create Request'}
+            <button type="submit" className="btn-primary" disabled={loading || !title.trim() || base <= 0 || (imageMode === 'upload' && uploading)} style={{ width: '100%', padding: '14px', fontSize: 15 }}>
+              {uploading ? 'Uploading image...' : loading ? 'Creating...' : 'Create Request'}
             </button>
           </form>
 
@@ -318,51 +202,7 @@ export default function CreateRequestPage() {
         </div>
       </div>
 
-      {gateOpen && featuredReq && (
-        <DonationGateModal mandatoryRequest={featuredReq} onClose={() => setGateOpen(false)} onDonate={handleSupportFeatured} />
-      )}
-      {donateOpen && featuredReq && (
-        <DonateModal
-          request={featuredReq}
-          onClose={() => { setDonateOpen(false); refreshDonationSum() }}
-          onDonated={() => { refreshDonationSum() }}
-        />
-      )}
-
       {shareRequest && <ShareStoryModal request={shareRequest} referralCode={profile?.referral_code} onClose={() => { setShareRequest(null); navigate('/dashboard') }} />}
-
-      {insufficientOpen && (
-        <div className="modal-backdrop" onClick={e => e.target === e.currentTarget && setInsufficientOpen(false)}>
-          <div className="modal-box" style={{ maxWidth: 420 }}>
-            <div style={{ padding: '28px 24px', textAlign: 'center' }}>
-              <div style={{
-                width: 56, height: 56, borderRadius: '50%',
-                background: 'rgba(240,96,96,0.1)', border: '1px solid rgba(240,96,96,0.3)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                margin: '0 auto 18px', fontSize: 26, color: 'var(--error)',
-              }}>!</div>
-              <h2 style={{ margin: '0 0 10px', fontSize: 20, fontWeight: 800, color: 'var(--text-primary)' }}>
-                Insufficient Stars
-              </h2>
-              <p style={{ margin: '0 0 8px', fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-                You need at least <span style={{ color: 'var(--accent)', fontWeight: 700 }}>★ {MANDATORY_MIN_DONATION}</span> to pay the platform fee,
-                but your balance is <span style={{ color: 'var(--error)', fontWeight: 700 }}>★ {profile?.stars_balance?.toFixed(0) ?? 0}</span>.
-              </p>
-              <p style={{ margin: '0 0 22px', fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.6 }}>
-                Add Stars to your wallet, then come back to publish your campaign.
-              </p>
-              <div style={{ display: 'flex', gap: 10 }}>
-                <button className="btn-secondary" onClick={() => setInsufficientOpen(false)} style={{ flex: 1, padding: '12px', fontSize: 14 }}>
-                  Cancel
-                </button>
-                <button className="btn-primary" onClick={() => { setInsufficientOpen(false); navigate('/dashboard') }} style={{ flex: 1, padding: '12px', fontSize: 14 }}>
-                  Go to Wallet →
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   )
 }

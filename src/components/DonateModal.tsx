@@ -72,17 +72,6 @@ export default function DonateModal({ request, onClose, onDonated }: Props) {
             />
           )}
 
-          {request.is_platform_post && (
-            <div style={{
-              display: 'inline-flex', alignItems: 'center', gap: 5,
-              background: 'var(--accent-muted)', border: '1px solid rgba(245,200,66,0.3)',
-              borderRadius: 999, padding: '3px 10px', fontSize: 10, fontWeight: 800,
-              color: '#0d0f14', marginBottom: 14, letterSpacing: '0.06em', textTransform: 'uppercase',
-            }}>
-              ★ Official Campaign
-            </div>
-          )}
-
           <div style={{ marginBottom: 16 }}>
             <div style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 8 }}>Your balance: ★ {balance.toFixed(0)}</div>
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12 }}>
