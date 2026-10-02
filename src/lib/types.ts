@@ -21,6 +21,9 @@ export interface Request {
   final_target: number
   current_stars: number
   is_unlimited: boolean
+  is_verified: boolean
+  is_gold: boolean
+  bumped_at: string | null
   status: 'active' | 'funded' | 'closed' | 'paid_out'
   created_at: string
   updated_at: string
@@ -49,6 +52,8 @@ export interface Transaction {
   donor_id: string
   request_id: string
   stars_amount: number
+  cover_fee: boolean
+  fee_amount: number
   created_at: string
 }
 

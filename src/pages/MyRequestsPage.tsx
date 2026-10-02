@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext'
 import type { Request } from '../lib/types'
 import RequestCard from '../components/RequestCard'
 import DonateModal from '../components/DonateModal'
+import UpgradeModal from '../components/UpgradeModal'
 
 export default function MyRequestsPage() {
   const { user } = useAuth()
@@ -12,20 +13,23 @@ export default function MyRequestsPage() {
   const [requests, setRequests] = useState<Request[]>([])
   const [loading, setLoading] = useState(true)
   const [selected, setSelected] = useState<Request | null>(null)
+  const [upgradeTarget, setUpgradeTarget] = useState<Request | null>(null)
+
+  const fetchRequests = async () => {
+    if (!user) return
+    try {
+      const { data } = await supabase.from('requests').select('*').eq('user_id', user.id).order('created_at', { ascending: false })
+      setRequests((data ?? []) as Request[])
+    } catch (err) {
+      console.error('Fetch my requests error:', err)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   useEffect(() => {
     if (!user) { navigate('/login'); return }
-    let cancelled = false
-    ;(async () => {
-      try {
-        const { data } = await supabase.from('requests').select('*').eq('user_id', user.id).order('created_at', { ascending: false })
-        if (!cancelled) { setRequests((data ?? []) as Request[]); setLoading(false) }
-      } catch (err) {
-        console.error('Fetch my requests error:', err)
-        if (!cancelled) setLoading(false)
-      }
-    })()
-    return () => { cancelled = true }
+    fetchRequests()
   }, [user])
 
   return (
@@ -52,11 +56,36 @@ export default function MyRequestsPage() {
           </div>
         ) : (
           <div className="grid-cards">
-            {requests.map(r => <RequestCard key={r.id} request={r} onClick={() => setSelected(r)} />)}
+            {requests.map(r => (
+              <div key={r.id} style={{ position: 'relative' }}>
+                <RequestCard request={r} onClick={() => setSelected(r)} />
+                <button
+                  onClick={(e) => { e.stopPropagation(); setUpgradeTarget(r) }}
+                  style={{
+                    position: 'absolute', top: 10, left: 10,
+                    background: 'var(--accent)', color: '#0d0f14',
+                    border: 'none', borderRadius: 8,
+                    padding: '5px 12px', fontSize: 11, fontWeight: 700,
+                    cursor: 'pointer', zIndex: 5,
+                    display: 'flex', alignItems: 'center', gap: 4,
+                    boxShadow: '0 2px 8px rgba(245,200,66,0.3)',
+                  }}
+                >
+                  ⚡ Boost
+                </button>
+              </div>
+            ))}
           </div>
         )}
       </div>
-      {selected && <DonateModal request={selected} onClose={() => setSelected(null)} onDonated={() => {}} />}
+      {selected && <DonateModal request={selected} onClose={() => setSelected(null)} onDonated={fetchRequests} />}
+      {upgradeTarget && (
+        <UpgradeModal
+          request={upgradeTarget}
+          onClose={() => setUpgradeTarget(null)}
+          onUpgraded={fetchRequests}
+        />
+      )}
     </div>
   )
 }

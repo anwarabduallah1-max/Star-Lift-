@@ -33,6 +33,14 @@ export default function ExplorePage() {
       const { data: profiles } = await supabase.from('profiles').select('id, username, avatar_url').in('id', userIds)
       const profileMap = Object.fromEntries((profiles ?? []).map(p => [p.id, p]))
       const mapped = data.map((r: Request) => ({ ...r, profile: profileMap[r.user_id] ?? null })) as Request[]
+      mapped.sort((a, b) => {
+        const aBumped = a.bumped_at ? new Date(a.bumped_at).getTime() : 0
+        const bBumped = b.bumped_at ? new Date(b.bumped_at).getTime() : 0
+        if (aBumped && bBumped) return bBumped - aBumped
+        if (aBumped && !bBumped) return -1
+        if (!aBumped && bBumped) return 1
+        return 0
+      })
       setRequests(mapped)
     } catch (err) {
       console.error('Fetch requests error:', err)

@@ -3,13 +3,14 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
-import { PLATFORM_FEE } from '../lib/config'
+import { PLATFORM_FEE, UPGRADE_COSTS } from '../lib/config'
 import type { Request } from '../lib/types'
 import ShareStoryModal from '../components/ShareStoryModal'
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024
 const ACCEPTED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
 type ImageMode = 'url' | 'upload'
+type UpgradeChoice = 'none' | 'bump' | 'verified' | 'gold'
 
 export default function CreateRequestPage() {
   const { user, profile, refreshProfile } = useAuth()
@@ -23,6 +24,7 @@ export default function CreateRequestPage() {
   const [baseTarget, setBaseTarget] = useState('')
   const [loading, setLoading] = useState(false)
   const [imagePreviewError, setImagePreviewError] = useState(false)
+  const [upgrade, setUpgrade] = useState<UpgradeChoice>('none')
 
   const [imageMode, setImageMode] = useState<ImageMode>('url')
   const [uploading, setUploading] = useState(false)
@@ -39,6 +41,16 @@ export default function CreateRequestPage() {
   const base = parseFloat(baseTarget) || 0
   const fee = base * PLATFORM_FEE
   const finalTarget = base + fee
+  const upgradeCost = upgrade === 'bump' ? UPGRADE_COSTS.bump : upgrade === 'verified' ? UPGRADE_COSTS.verified : upgrade === 'gold' ? UPGRADE_COSTS.gold : 0
+  const balance = profile?.stars_balance ?? 0
+  const upgradeInsufficient = upgrade !== 'none' && upgradeCost > balance
+
+  const UPGRADE_OPTIONS: { value: UpgradeChoice; label: string; cost: number; desc: string }[] = [
+    { value: 'none', label: 'No thanks', cost: 0, desc: 'Free — create your request as-is' },
+    { value: 'bump', label: 'Bump to Top', cost: UPGRADE_COSTS.bump, desc: 'Appear at the top of the Explore feed' },
+    { value: 'verified', label: 'Verified Badge', cost: UPGRADE_COSTS.verified, desc: 'Verified badge on your request card' },
+    { value: 'gold', label: 'Gold Wish Bundle', cost: UPGRADE_COSTS.gold, desc: 'Gold styling + verified badge + bump to top' },
+  ]
 
   const validateFile = (file: File): boolean => {
     if (!ACCEPTED_TYPES.includes(file.type)) { showToast('Please choose a JPG, PNG, WEBP, or GIF image.', 'error'); return false }
@@ -58,6 +70,7 @@ export default function CreateRequestPage() {
     if (!user) { navigate('/login'); return }
     if (!title.trim()) { showToast('Please enter a title', 'error'); return }
     if (base <= 0) { showToast('Please enter a valid target amount', 'error'); return }
+    if (upgradeInsufficient) { showToast(`Insufficient Stars for the selected upgrade. You need ★ ${upgradeCost}.`, 'error'); return }
 
     setLoading(true)
     try {
@@ -77,10 +90,28 @@ export default function CreateRequestPage() {
         title: title.trim(), description: description.trim(), image_url: finalImageUrl,
         product_url: productUrl.trim(), base_target: base, final_target: finalTarget,
       }).select('*').single()
-      setLoading(false)
 
-      if (error) showToast('Could not create your request. Please try again.', 'error')
-      else { showToast('Request created successfully!', 'success'); setShareRequest(createdRequest as Request) }
+      if (error) { showToast('Could not create your request. Please try again.', 'error'); setLoading(false); return }
+
+      // Apply upgrade if selected
+      if (upgrade !== 'none' && createdRequest) {
+        const upgradeType = upgrade === 'bump' ? 'bump' : upgrade === 'verified' ? 'verified' : 'gold'
+        const { error: upgErr } = await supabase.rpc('purchase_upgrade', {
+          p_request_id: createdRequest.id,
+          p_upgrade_type: upgradeType,
+        })
+        if (upgErr) {
+          showToast(`Request created, but upgrade failed: ${upgErr.message}`, 'error')
+        } else {
+          showToast(`Request created with ${UPGRADE_OPTIONS.find(o => o.value === upgrade)?.label}!`, 'success')
+          await refreshProfile()
+        }
+      } else {
+        showToast('Request created successfully!', 'success')
+      }
+
+      setLoading(false)
+      setShareRequest(createdRequest as Request)
     } catch (err) {
       console.error('Submit error:', err)
       showToast('An unexpected error occurred. Please try again.', 'error')
@@ -96,7 +127,7 @@ export default function CreateRequestPage() {
 
         <div style={{ marginBottom: 32 }}>
           <h1 style={{ margin: '0 0 8px', fontSize: 32, fontWeight: 900, letterSpacing: '-0.02em' }}>Create a Request</h1>
-          <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: 15 }}>Share what you need and let the community help fund it with Stars.</p>
+          <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: 15 }}>Share what you need and let the community help fund it with Stars. Free to create.</p>
         </div>
 
         <div className="create-layout">
@@ -163,7 +194,49 @@ export default function CreateRequestPage() {
               <p style={{ margin: '8px 0 0', fontSize: 12, color: 'var(--text-muted)' }}>This is how many Stars you want to raise (1 Star = 1 USDT)</p>
             </div>
 
-            <button type="submit" className="btn-primary" disabled={loading || !title.trim() || base <= 0 || (imageMode === 'upload' && uploading)} style={{ width: '100%', padding: '14px', fontSize: 15 }}>
+            {/* Paid upgrades */}
+            <div>
+              <label className="field-label">Boost Your Request (optional)</label>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {UPGRADE_OPTIONS.map(opt => (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => setUpgrade(opt.value)}
+                    style={{
+                      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                      padding: '12px 14px', borderRadius: 10,
+                      background: upgrade === opt.value ? 'var(--accent-muted)' : 'var(--surface-raised)',
+                      border: upgrade === opt.value ? '1px solid rgba(245,200,66,0.3)' : '1px solid var(--border)',
+                      cursor: 'pointer', textAlign: 'left',
+                      transition: 'all 0.15s ease',
+                    }}
+                  >
+                    <div>
+                      <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)' }}>
+                        {opt.label}
+                        {opt.cost > 0 && (
+                          <span style={{ marginLeft: 8, fontSize: 12, fontWeight: 800, color: 'var(--accent)' }}>★ {opt.cost}</span>
+                        )}
+                      </div>
+                      <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>{opt.desc}</div>
+                    </div>
+                    <div style={{
+                      width: 18, height: 18, borderRadius: '50%',
+                      border: upgrade === opt.value ? '5px solid var(--accent)' : '2px solid rgba(255,255,255,0.2)',
+                      flexShrink: 0,
+                    }} />
+                  </button>
+                ))}
+              </div>
+              {upgradeInsufficient && (
+                <div style={{ marginTop: 8, fontSize: 12, color: 'var(--error)' }}>
+                  Insufficient Stars for this upgrade. Your balance: ★ {balance.toFixed(0)}
+                </div>
+              )}
+            </div>
+
+            <button type="submit" className="btn-primary" disabled={loading || !title.trim() || base <= 0 || upgradeInsufficient || (imageMode === 'upload' && uploading)} style={{ width: '100%', padding: '14px', fontSize: 15 }}>
               {uploading ? 'Uploading image...' : loading ? 'Creating...' : 'Create Request'}
             </button>
           </form>
@@ -185,6 +258,12 @@ export default function CreateRequestPage() {
                   <span style={{ fontSize: 13, color: 'var(--text-secondary)' }}>Platform fee (10%)</span>
                   <span style={{ fontSize: 13, color: 'var(--text-muted)' }}>+ ★ {fee.toFixed(1)}</span>
                 </div>
+                {upgradeCost > 0 && (
+                  <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 14px', background: 'var(--accent-muted)', borderRadius: 8, border: '1px solid rgba(245,200,66,0.2)' }}>
+                    <span style={{ fontSize: 13, color: 'var(--accent)' }}>Upgrade</span>
+                    <span style={{ fontSize: 13, color: 'var(--accent)', fontWeight: 700 }}>+ ★ {upgradeCost}</span>
+                  </div>
+                )}
                 <hr className="divider" />
                 <div style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 14px', background: 'var(--accent-muted)', borderRadius: 8, border: '1px solid rgba(245,200,66,0.2)' }}>
                   <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--accent)' }}>Total Goal</span>
