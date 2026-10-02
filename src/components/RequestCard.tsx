@@ -38,17 +38,18 @@ export default function RequestCard({ request, onClick }: Props) {
         flexDirection: 'column',
         position: 'relative',
         ...(isGold ? {
-          borderColor: 'rgba(245,200,66,0.4)',
-          boxShadow: '0 0 0 1px rgba(245,200,66,0.15), 0 4px 24px rgba(245,200,66,0.08)',
+          borderColor: 'rgba(245,200,66,0.5)',
+          boxShadow: '0 0 0 2px rgba(245,200,66,0.2), 0 8px 32px rgba(245,200,66,0.12)',
         } : {}),
       }}
     >
       {isGold && (
         <div style={{
-          height: 3,
+          height: 4,
           background: 'linear-gradient(90deg, #f5c842, #f7d265, #f5c842)',
           backgroundSize: '200% 100%',
           animation: 'shimmer 3s linear infinite',
+          flexShrink: 0,
         }} />
       )}
 
@@ -78,17 +79,51 @@ export default function RequestCard({ request, onClick }: Props) {
           }}>★</div>
         )}
 
-        {(isFunded || isPaidOut) && (
+        {/* Verified badge overlay on image */}
+        {isVerified && (
+          <div style={{
+            position: 'absolute', top: 10, left: 10,
+            display: 'flex', alignItems: 'center', gap: 4,
+            background: 'rgba(13,15,20,0.85)',
+            backdropFilter: 'blur(8px)',
+            borderRadius: 999,
+            padding: '4px 10px',
+            zIndex: 2,
+          }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--accent)"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+            <span style={{ fontSize: 10, fontWeight: 800, color: 'var(--accent)', letterSpacing: '0.05em', textTransform: 'uppercase' }}>Verified</span>
+          </div>
+        )}
+
+        {/* Gold badge overlay on image */}
+        {isGold && (
           <div style={{
             position: 'absolute', top: 10, right: 10,
+            display: 'flex', alignItems: 'center', gap: 4,
+            background: 'linear-gradient(135deg, #f5c842, #f7d265)',
+            borderRadius: 999,
+            padding: '4px 10px',
+            zIndex: 2,
+            boxShadow: '0 2px 12px rgba(245,200,66,0.4)',
+          }}>
+            <span style={{ fontSize: 11, fontWeight: 900, color: '#0d0f14', letterSpacing: '0.05em' }}>★</span>
+            <span style={{ fontSize: 10, fontWeight: 800, color: '#0d0f14', letterSpacing: '0.05em', textTransform: 'uppercase' }}>Gold</span>
+          </div>
+        )}
+
+        {(isFunded || isPaidOut) && (
+          <div style={{
+            position: 'absolute', bottom: 10, right: 10,
             background: 'rgba(62,207,142,0.15)',
             border: '1px solid rgba(62,207,142,0.4)',
+            backdropFilter: 'blur(8px)',
             color: 'var(--success)',
             fontSize: 11, fontWeight: 700,
             padding: '3px 10px',
             borderRadius: 999,
             letterSpacing: '0.05em',
             textTransform: 'uppercase',
+            zIndex: 2,
           }}>
             {isPaidOut ? 'Paid Out' : 'Funded'}
           </div>
@@ -97,38 +132,6 @@ export default function RequestCard({ request, onClick }: Props) {
 
       <div style={{ padding: '16px 18px 18px', flex: 1, display: 'flex', flexDirection: 'column', gap: 12 }}>
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
-            {isGold && (
-              <span style={{
-                display: 'inline-flex', alignItems: 'center', gap: 4,
-                fontSize: 10, fontWeight: 800,
-                color: '#0d0f14',
-                background: 'linear-gradient(135deg, #f5c842, #f7d265)',
-                borderRadius: 999,
-                padding: '2px 8px',
-                letterSpacing: '0.06em',
-                textTransform: 'uppercase',
-              }}>
-                ★ Gold
-              </span>
-            )}
-            {isVerified && (
-              <span style={{
-                display: 'inline-flex', alignItems: 'center', gap: 3,
-                fontSize: 10, fontWeight: 700,
-                color: 'var(--accent)',
-                background: 'var(--accent-muted)',
-                border: '1px solid rgba(245,200,66,0.2)',
-                borderRadius: 999,
-                padding: '2px 7px',
-                letterSpacing: '0.04em',
-                textTransform: 'uppercase',
-              }}>
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-                Verified
-              </span>
-            )}
-          </div>
           <h3 style={{
             margin: 0, fontSize: 15, fontWeight: 700,
             color: 'var(--text-primary)',

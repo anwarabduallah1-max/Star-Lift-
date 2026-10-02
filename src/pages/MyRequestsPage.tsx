@@ -6,6 +6,7 @@ import type { Request } from '../lib/types'
 import RequestCard from '../components/RequestCard'
 import DonateModal from '../components/DonateModal'
 import UpgradeModal from '../components/UpgradeModal'
+import { UPGRADE_COSTS } from '../lib/config'
 
 export default function MyRequestsPage() {
   const { user } = useAuth()
@@ -32,6 +33,14 @@ export default function MyRequestsPage() {
     fetchRequests()
   }, [user])
 
+  const activeBadges = (r: Request) => {
+    const badges: { label: string; color: string; bg: string }[] = []
+    if (r.is_gold) badges.push({ label: '★ Gold', color: '#0d0f14', bg: 'linear-gradient(135deg, #f5c842, #f7d265)' })
+    if (r.is_verified) badges.push({ label: '✓ Verified', color: 'var(--accent)', bg: 'var(--accent-muted)' })
+    if (r.bumped_at) badges.push({ label: '⬆ Bumped', color: 'var(--accent)', bg: 'var(--accent-muted)' })
+    return badges
+  }
+
   return (
     <div style={{ minHeight: 'calc(100vh - 60px)', paddingBottom: 80, paddingTop: 40 }}>
       <div className="page-container">
@@ -56,25 +65,59 @@ export default function MyRequestsPage() {
           </div>
         ) : (
           <div className="grid-cards">
-            {requests.map(r => (
-              <div key={r.id} style={{ position: 'relative' }}>
-                <RequestCard request={r} onClick={() => setSelected(r)} />
-                <button
-                  onClick={(e) => { e.stopPropagation(); setUpgradeTarget(r) }}
-                  style={{
-                    position: 'absolute', top: 10, left: 10,
-                    background: 'var(--accent)', color: '#0d0f14',
-                    border: 'none', borderRadius: 8,
-                    padding: '5px 12px', fontSize: 11, fontWeight: 700,
-                    cursor: 'pointer', zIndex: 5,
-                    display: 'flex', alignItems: 'center', gap: 4,
-                    boxShadow: '0 2px 8px rgba(245,200,66,0.3)',
-                  }}
-                >
-                  ⚡ Boost
-                </button>
-              </div>
-            ))}
+            {requests.map(r => {
+              const badges = activeBadges(r)
+              const allUpgrades = r.is_gold
+              return (
+                <div key={r.id} style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+                  <RequestCard request={r} onClick={() => setSelected(r)} />
+                  <div style={{
+                    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                    padding: '10px 14px',
+                    background: 'var(--surface)',
+                    border: '1px solid var(--border)',
+                    borderTop: 'none',
+                    borderRadius: '0 0 14px 14px',
+                  }}>
+                    <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                      {badges.length > 0 ? (
+                        badges.map((b, i) => (
+                          <span key={i} style={{
+                            fontSize: 10, fontWeight: 700,
+                            color: b.color,
+                            background: b.bg,
+                            borderRadius: 999, padding: '2px 8px',
+                            letterSpacing: '0.04em', textTransform: 'uppercase',
+                            whiteSpace: 'nowrap',
+                          }}>{b.label}</span>
+                        ))
+                      ) : (
+                        <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>No upgrades</span>
+                      )}
+                    </div>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); setUpgradeTarget(r) }}
+                      disabled={allUpgrades}
+                      style={{
+                        background: allUpgrades ? 'var(--surface-raised)' : 'var(--accent)',
+                        color: allUpgrades ? 'var(--text-muted)' : '#0d0f14',
+                        border: 'none', borderRadius: 8,
+                        padding: '5px 12px', fontSize: 11, fontWeight: 700,
+                        cursor: allUpgrades ? 'default' : 'pointer',
+                        display: 'flex', alignItems: 'center', gap: 4,
+                        whiteSpace: 'nowrap',
+                        transition: 'all 0.2s ease',
+                        ...(allUpgrades ? {} : { boxShadow: '0 2px 8px rgba(245,200,66,0.25)' }),
+                      }}
+                      onMouseEnter={e => { if (!allUpgrades) { e.currentTarget.style.transform = 'scale(1.03)' } }}
+                      onMouseLeave={e => { if (!allUpgrades) { e.currentTarget.style.transform = 'scale(1)' } }}
+                    >
+                      {allUpgrades ? 'Maxed' : '⚡ Boost'}
+                    </button>
+                  </div>
+                </div>
+              )
+            })}
           </div>
         )}
       </div>
