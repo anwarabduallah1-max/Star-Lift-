@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
@@ -11,26 +11,44 @@ import GlobalLeaderboard from '../components/GlobalLeaderboard'
 type Filter = 'all' | 'active' | 'funded'
 type Tab = 'requests' | 'leaderboard'
 
+const PAGE_SIZE = 20
+
+const REQUEST_COLUMNS = 'id, user_id, title, description, image_url, product_url, base_target, final_target, current_stars, is_unlimited, is_verified, is_gold, bumped_at, status, created_at, updated_at'
+
 export default function ExplorePage() {
   const { user } = useAuth()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const [requests, setRequests] = useState<Request[]>([])
   const [loading, setLoading] = useState(true)
+  const [loadingMore, setLoadingMore] = useState(false)
+  const [hasMore, setHasMore] = useState(true)
   const [filter, setFilter] = useState<Filter>('all')
   const [selected, setSelected] = useState<Request | null>(null)
   const [search, setSearch] = useState('')
   const [tab, setTab] = useState<Tab>('requests')
 
-  const fetchRequests = async () => {
+  const fetchRequests = useCallback(async (page: number, replace: boolean) => {
+    if (replace) {
+      setLoading(true)
+    } else {
+      setLoadingMore(true)
+    }
     try {
-      let query = supabase.from('requests').select('*').order('created_at', { ascending: false })
+      let query = supabase
+        .from('requests')
+        .select(REQUEST_COLUMNS)
+        .order('created_at', { ascending: false })
+        .range(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE - 1)
       if (filter !== 'all') query = query.eq('status', filter)
       const { data, error } = await query
-      if (error || !data) { setLoading(false); return }
+      if (error || !data) { if (replace) setLoading(false); else setLoadingMore(false); return }
 
       const userIds = [...new Set(data.map((r: Request) => r.user_id))]
-      const { data: profiles } = await supabase.from('profiles').select('id, username, avatar_url').in('id', userIds)
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('id, username, avatar_url')
+        .in('id', userIds)
       const profileMap = Object.fromEntries((profiles ?? []).map(p => [p.id, p]))
       const mapped = data.map((r: Request) => ({ ...r, profile: profileMap[r.user_id] ?? null })) as Request[]
       mapped.sort((a, b) => {
@@ -41,15 +59,29 @@ export default function ExplorePage() {
         if (!aBumped && bBumped) return 1
         return 0
       })
-      setRequests(mapped)
+
+      setHasMore(data.length === PAGE_SIZE)
+      setRequests(prev => replace ? mapped : [...prev, ...mapped])
     } catch (err) {
       console.error('Fetch requests error:', err)
     } finally {
       setLoading(false)
+      setLoadingMore(false)
     }
-  }
+  }, [filter])
 
-  useEffect(() => { setLoading(true); fetchRequests() }, [filter])
+  const [page, setPage] = useState(0)
+
+  useEffect(() => {
+    setPage(0)
+    fetchRequests(0, true)
+  }, [fetchRequests])
+
+  const handleLoadMore = () => {
+    const next = page + 1
+    setPage(next)
+    fetchRequests(next, false)
+  }
 
   useEffect(() => {
     const referralCode = searchParams.get('ref')
@@ -60,15 +92,23 @@ export default function ExplorePage() {
     if (target) setSelected(target)
   }, [searchParams, requests])
 
-  const filtered = requests.filter(r =>
-    r.title.toLowerCase().includes(search.toLowerCase()) ||
-    r.description.toLowerCase().includes(search.toLowerCase())
-  )
+  const filtered = useMemo(() => {
+    if (!search) return requests
+    const q = search.toLowerCase()
+    return requests.filter(r =>
+      r.title.toLowerCase().includes(q) ||
+      r.description.toLowerCase().includes(q)
+    )
+  }, [requests, search])
 
   const handleCardClick = (r: Request) => {
     if (!user) { navigate('/login'); return }
     setSelected(r)
   }
+
+  const activeCount = useMemo(() => requests.filter(r => r.status === 'active').length, [requests])
+  const fundedCount = useMemo(() => requests.filter(r => r.status === 'funded').length, [requests])
+  const totalStars = useMemo(() => requests.reduce((s, r) => s + r.current_stars, 0).toFixed(0), [requests])
 
   return (
     <div style={{ minHeight: 'calc(100vh - 60px)', paddingBottom: 80 }}>
@@ -107,9 +147,9 @@ export default function ExplorePage() {
         <div className="page-container">
           <div style={{ display: 'flex', gap: 32, flexWrap: 'wrap' }}>
             {[
-              { label: 'Active Requests', value: requests.filter(r => r.status === 'active').length },
-              { label: 'Fully Funded', value: requests.filter(r => r.status === 'funded').length },
-              { label: 'Total Stars Raised', value: `★ ${requests.reduce((s, r) => s + r.current_stars, 0).toFixed(0)}` },
+              { label: 'Active Requests', value: activeCount },
+              { label: 'Fully Funded', value: fundedCount },
+              { label: 'Total Stars Raised', value: `★ ${totalStars}` },
             ].map(stat => (
               <div key={stat.label}>
                 <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--accent)' }}>{stat.value}</div>
@@ -166,9 +206,23 @@ export default function ExplorePage() {
                   </button>
                 </div>
               ) : (
-                <div className="grid-cards">
-                  {filtered.map(r => <RequestCard key={r.id} request={r} onClick={() => handleCardClick(r)} />)}
-                </div>
+                <>
+                  <div className="grid-cards">
+                    {filtered.map(r => <RequestCard key={r.id} request={r} onClick={() => handleCardClick(r)} />)}
+                  </div>
+                  {!search && hasMore && (
+                    <div style={{ textAlign: 'center', marginTop: 32 }}>
+                      <button
+                        className="btn-secondary"
+                        onClick={handleLoadMore}
+                        disabled={loadingMore}
+                        style={{ padding: '10px 28px', fontSize: 14 }}
+                      >
+                        {loadingMore ? 'Loading...' : 'Load More'}
+                      </button>
+                    </div>
+                  )}
+                </>
               )}
             </div>
           </div>
@@ -179,7 +233,7 @@ export default function ExplorePage() {
         <GlobalLeaderboard />
       )}
 
-      {selected && <DonateModal request={selected} onClose={() => setSelected(null)} onDonated={fetchRequests} />}
+      {selected && <DonateModal request={selected} onClose={() => setSelected(null)} onDonated={() => { setPage(0); fetchRequests(0, true) }} />}
     </div>
   )
 }

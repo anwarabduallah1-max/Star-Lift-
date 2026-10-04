@@ -62,6 +62,7 @@ export default function RequestCard({ request, onClick }: Props) {
           <img
             src={request.image_url}
             alt={request.title}
+            loading="lazy"
             style={{
               position: 'absolute', inset: 0, width: '100%', height: '100%',
               objectFit: 'cover',

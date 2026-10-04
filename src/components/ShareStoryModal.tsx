@@ -48,7 +48,7 @@ export default function ShareStoryModal({ request, referralCode, onClose }: Prop
               <div style={{ display: 'inline-flex', padding: '8px 12px', borderRadius: 9, background: 'var(--accent-muted)', color: 'var(--accent)', fontWeight: 800, fontSize: 13 }}>★ {request.current_stars.toFixed(0)} raised · Goal ★ {request.final_target.toFixed(0)}</div>
             </div>
             <div style={{ background: '#fff', borderRadius: 12, padding: 8, flexShrink: 0 }}>
-              <img src={qrUrl} alt="QR code for this campaign" width={150} height={150} style={{ display: 'block' }} />
+              <img src={qrUrl} alt="QR code for this campaign" width={150} height={150} loading="lazy" style={{ display: 'block' }} />
             </div>
           </div>
 

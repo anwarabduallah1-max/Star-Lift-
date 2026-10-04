@@ -72,6 +72,7 @@ export default function DonateModal({ request, onClose, onDonated }: Props) {
             <img
               src={request.image_url}
               alt={request.title}
+              loading="lazy"
               style={{ width: '100%', height: 140, objectFit: 'cover', borderRadius: 10, marginBottom: 16 }}
               onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
             />

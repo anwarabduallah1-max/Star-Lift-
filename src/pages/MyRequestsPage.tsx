@@ -19,7 +19,11 @@ export default function MyRequestsPage() {
   const fetchRequests = async () => {
     if (!user) return
     try {
-      const { data } = await supabase.from('requests').select('*').eq('user_id', user.id).order('created_at', { ascending: false })
+      const { data } = await supabase
+        .from('requests')
+        .select('id, user_id, title, description, image_url, product_url, base_target, final_target, current_stars, is_unlimited, is_verified, is_gold, bumped_at, status, created_at, updated_at')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
       setRequests((data ?? []) as Request[])
     } catch (err) {
       console.error('Fetch my requests error:', err)

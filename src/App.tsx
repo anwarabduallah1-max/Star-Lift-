@@ -1,15 +1,24 @@
+import { lazy, Suspense } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import { ToastProvider } from './context/ToastContext'
 import { isSupabaseReady } from './lib/supabase'
 import Navbar from './components/Navbar'
 import ConfigWarning from './components/ConfigWarning'
-import ExplorePage from './pages/ExplorePage'
-import CreateRequestPage from './pages/CreateRequestPage'
-import LoginPage from './pages/LoginPage'
-import SignupPage from './pages/SignupPage'
-import DashboardPage from './pages/DashboardPage'
-import ProfilePage from './pages/ProfilePage'
+
+const ExplorePage = lazy(() => import('./pages/ExplorePage'))
+const CreateRequestPage = lazy(() => import('./pages/CreateRequestPage'))
+const LoginPage = lazy(() => import('./pages/LoginPage'))
+const SignupPage = lazy(() => import('./pages/SignupPage'))
+const DashboardPage = lazy(() => import('./pages/DashboardPage'))
+const ProfilePage = lazy(() => import('./pages/ProfilePage'))
+
+const PageLoader = () => (
+  <div style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <div style={{ fontSize: 32, opacity: 0.2, animation: 'pulse 1.5s ease-in-out infinite' }}>★</div>
+    <style>{`@keyframes pulse { 0%, 100% { opacity: 0.2; } 50% { opacity: 0.5; } }`}</style>
+  </div>
+)
 
 export default function App() {
   if (!isSupabaseReady) {
@@ -36,19 +45,20 @@ export default function App() {
       <ToastProvider>
         <BrowserRouter>
           <Navbar />
-          <Routes>
-            <Route path="/" element={<ExplorePage />} />
-            <Route path="/create" element={<CreateRequestPage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<SignupPage />} />
-            <Route path="/dashboard" element={<DashboardPage />} />
-            <Route path="/profile" element={<ProfilePage />} />
-            {/* Redirect old routes to consolidated pages */}
-            <Route path="/wallet" element={<Navigate to="/dashboard" replace />} />
-            <Route path="/my-requests" element={<Navigate to="/dashboard" replace />} />
-            <Route path="/referrals" element={<Navigate to="/dashboard" replace />} />
-            <Route path="/leaderboard" element={<Navigate to="/" replace />} />
-          </Routes>
+          <Suspense fallback={<PageLoader />}>
+            <Routes>
+              <Route path="/" element={<ExplorePage />} />
+              <Route path="/create" element={<CreateRequestPage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/signup" element={<SignupPage />} />
+              <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/wallet" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/my-requests" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/referrals" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/leaderboard" element={<Navigate to="/" replace />} />
+            </Routes>
+          </Suspense>
         </BrowserRouter>
       </ToastProvider>
     </AuthProvider>
