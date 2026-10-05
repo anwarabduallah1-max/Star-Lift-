@@ -59,6 +59,13 @@ export default function Navbar() {
               >
                 Dashboard
               </button>
+              <button
+                className="btn-ghost"
+                onClick={() => navigate('/squad')}
+                style={{ fontSize: 14, padding: '6px 12px', whiteSpace: 'nowrap', color: activePath === '/squad' ? 'var(--accent)' : undefined }}
+              >
+                Squad
+              </button>
               <div ref={menuRef} style={{ position: 'relative' }}>
                 <button
                   onClick={() => setMenuOpen(o => !o)}

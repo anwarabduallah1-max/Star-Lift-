@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext'
 import type { Request } from '../lib/types'
 import RequestCard from '../components/RequestCard'
 import DonateModal from '../components/DonateModal'
+import SpinWheelModal from '../components/SpinWheelModal'
 import Leaderboard from '../components/Leaderboard'
 import GlobalLeaderboard from '../components/GlobalLeaderboard'
 
@@ -27,6 +28,7 @@ export default function ExplorePage() {
   const [selected, setSelected] = useState<Request | null>(null)
   const [search, setSearch] = useState('')
   const [tab, setTab] = useState<Tab>('requests')
+  const [wheelOpen, setWheelOpen] = useState(false)
 
   const fetchRequests = useCallback(async (page: number, replace: boolean) => {
     if (replace) {
@@ -138,6 +140,21 @@ export default function ExplorePage() {
               <button className="btn-secondary" onClick={() => { setTab('requests'); document.getElementById('requests-grid')?.scrollIntoView({ behavior: 'smooth' }) }}>
                 Browse Requests ↓
               </button>
+              <button
+                onClick={() => user ? setWheelOpen(true) : navigate('/login')}
+                style={{
+                  fontSize: 15, padding: '12px 24px', border: 'none', borderRadius: 10,
+                  background: 'linear-gradient(135deg, #f5c842, #f7d265)',
+                  color: '#0d0f14', fontWeight: 800, cursor: 'pointer',
+                  display: 'flex', alignItems: 'center', gap: 8,
+                  boxShadow: '0 4px 16px rgba(245,200,66,0.25)',
+                  transition: 'transform 0.2s ease',
+                }}
+                onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.03)' }}
+                onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)' }}
+              >
+                🎡 Spin Wheel ($1)
+              </button>
             </div>
           </div>
         </div>
@@ -234,6 +251,7 @@ export default function ExplorePage() {
       )}
 
       {selected && <DonateModal request={selected} onClose={() => setSelected(null)} onDonated={() => { setPage(0); fetchRequests(0, true) }} />}
+      {wheelOpen && <SpinWheelModal onClose={() => setWheelOpen(false)} onSpun={() => { setPage(0); fetchRequests(0, true) }} />}
     </div>
   )
 }

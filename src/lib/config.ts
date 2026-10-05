@@ -10,3 +10,9 @@ export const UPGRADE_COSTS = {
 
 // Donor processing fee percentage (when donor opts to cover it)
 export const DONOR_FEE_PERCENT = 0.05
+
+// Wheel spin cost in Stars
+export const WHEEL_COST = 1
+
+// Squad max members
+export const SQUAD_MAX_MEMBERS = 3

@@ -85,3 +85,31 @@ export interface Withdrawal {
   created_at: string
   completed_at: string | null
 }
+
+export interface SquadMember {
+  user_id: string
+  username: string
+  avatar_url: string | null
+  total_donated: number
+  joined_at: string
+}
+
+export interface Squad {
+  id: string
+  name: string
+  invite_code: string
+  owner_id: string
+  members: SquadMember[]
+}
+
+export interface WheelSpinResult {
+  selected_request_id: string
+  candidates: string[]
+}
+
+export interface WheelCampaign {
+  id: string
+  title: string
+  image_url: string
+  current_stars: number
+}

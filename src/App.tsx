@@ -12,6 +12,7 @@ const LoginPage = lazy(() => import('./pages/LoginPage'))
 const SignupPage = lazy(() => import('./pages/SignupPage'))
 const DashboardPage = lazy(() => import('./pages/DashboardPage'))
 const ProfilePage = lazy(() => import('./pages/ProfilePage'))
+const SquadPage = lazy(() => import('./pages/SquadPage'))
 
 const PageLoader = () => (
   <div style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -53,6 +54,7 @@ export default function App() {
               <Route path="/signup" element={<SignupPage />} />
               <Route path="/dashboard" element={<DashboardPage />} />
               <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/squad" element={<SquadPage />} />
               <Route path="/wallet" element={<Navigate to="/dashboard" replace />} />
               <Route path="/my-requests" element={<Navigate to="/dashboard" replace />} />
               <Route path="/referrals" element={<Navigate to="/dashboard" replace />} />
