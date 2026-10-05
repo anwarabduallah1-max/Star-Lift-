@@ -6,6 +6,7 @@ import { useToast } from '../context/ToastContext'
 import { getAvatarSignedUrl } from '../components/AvatarUpload'
 import { SQUAD_MAX_MEMBERS } from '../lib/config'
 import type { Squad } from '../lib/types'
+import { Crown, Award, Shield } from 'lucide-react'
 
 export default function SquadPage() {
   const { user } = useAuth()
@@ -192,7 +193,7 @@ export default function SquadPage() {
                     <div style={{
                       width: 44, height: 44, borderRadius: '50%',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontSize: isTop ? 22 : 16, fontWeight: 900, flexShrink: 0,
+                      flexShrink: 0,
                       ...(isTop ? {
                         background: 'linear-gradient(135deg, #f5c842, #f7d265)',
                         color: '#0d0f14',
@@ -203,7 +204,7 @@ export default function SquadPage() {
                         border: '1px solid var(--border)',
                       }),
                     }}>
-                      {isTop ? '👑' : `#${i + 1}`}
+                      {isTop ? <Crown size={22} fill="currentColor" /> : i === 1 ? <Award size={20} /> : <Shield size={20} />}
                     </div>
 
                     <div className="avatar" style={{ width: 36, height: 36, fontSize: 14, flexShrink: 0, overflow: 'hidden' }}>
