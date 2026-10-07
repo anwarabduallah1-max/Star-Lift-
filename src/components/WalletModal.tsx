@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
 import { supabase, supabaseApiKey, supabaseApiUrl } from '../lib/supabase'
 import { safeFetchJson } from '../lib/safeFetch'
+import { X } from 'lucide-react'
 
 const PACKAGES = [
   { stars: 10,  price: 10,  label: 'Starter' },
@@ -204,7 +205,7 @@ export default function WalletModal({ onClose }: Props) {
             </p>
           </div>
           {step !== 'processing' && (
-            <button onClick={handleClose} className="btn-ghost" style={{ padding: '6px', marginTop: -4 }}>✕</button>
+            <button onClick={handleClose} className="btn-ghost" style={{ padding: '6px', marginTop: -4 }}><X size={18} /></button>
           )}
         </div>
 
@@ -214,7 +215,7 @@ export default function WalletModal({ onClose }: Props) {
             display: 'flex', alignItems: 'center', justifyContent: 'space-between',
             padding: '14px 18px',
             background: 'var(--accent-muted)',
-            border: '1px solid rgba(245,200,66,0.2)',
+            border: '1px solid rgba(255,200,1,0.2)',
             borderRadius: 12,
           }}>
             <div>
@@ -241,7 +242,7 @@ export default function WalletModal({ onClose }: Props) {
                       style={{
                         position: 'relative',
                         background: selected === pkg.stars && custom === '' ? 'var(--accent-muted)' : 'var(--surface-raised)',
-                        border: selected === pkg.stars && custom === '' ? '1px solid rgba(245,200,66,0.5)' : '1px solid var(--border)',
+                        border: selected === pkg.stars && custom === '' ? '1px solid rgba(255,200,1,0.5)' : '1px solid var(--border)',
                         borderRadius: 10,
                         padding: '12px 14px',
                         cursor: 'pointer',
@@ -281,7 +282,7 @@ export default function WalletModal({ onClose }: Props) {
                       style={{
                         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                         background: currency === c.code ? 'var(--accent-muted)' : 'var(--surface-raised)',
-                        border: currency === c.code ? '1px solid rgba(245,200,66,0.5)' : '1px solid var(--border)',
+                        border: currency === c.code ? '1px solid rgba(255,200,1,0.5)' : '1px solid var(--border)',
                         borderRadius: 10, padding: '10px 14px', cursor: 'pointer',
                         fontFamily: 'inherit', textAlign: 'left', transition: 'all 0.15s ease',
                       }}

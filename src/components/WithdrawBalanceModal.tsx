@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useToast } from '../context/ToastContext'
 import { supabase, supabaseApiKey, supabaseApiUrl } from '../lib/supabase'
+import { X, Check } from 'lucide-react'
 
 type Step = 'form' | 'processing' | 'done'
 
@@ -107,7 +108,7 @@ export default function WithdrawBalanceModal({ balance, onClose, onWithdrawn }: 
             </p>
           </div>
           {step !== 'processing' && (
-            <button onClick={onClose} className="btn-ghost" style={{ padding: '6px', marginTop: -4 }}>✕</button>
+            <button onClick={onClose} className="btn-ghost" style={{ padding: '6px', marginTop: -4 }}><X size={18} /></button>
           )}
         </div>
 
@@ -262,9 +263,9 @@ export default function WithdrawBalanceModal({ balance, onClose, onWithdrawn }: 
                 background: 'rgba(62,207,142,0.12)',
                 border: '2px solid var(--success)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 32, color: 'var(--success)',
+                color: 'var(--success)',
               }}>
-                ✓
+                <Check size={32} />
               </div>
               <div style={{ textAlign: 'center' }}>
                 <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--text-primary)', marginBottom: 4 }}>

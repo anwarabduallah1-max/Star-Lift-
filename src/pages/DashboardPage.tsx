@@ -188,7 +188,7 @@ export default function DashboardPage() {
         </div>
 
         {/* REFERRAL SECTION */}
-        <div className="card" style={{ padding: 28, borderColor: 'rgba(245,200,66,0.28)', background: 'linear-gradient(145deg, rgba(245,200,66,0.06), var(--surface) 55%)' }}>
+        <div className="card" style={{ padding: 28, borderColor: 'rgba(255,200,1,0.28)', background: 'linear-gradient(145deg, rgba(255,200,1,0.06), var(--surface) 55%)' }}>
           <h2 style={{ margin: '0 0 16px', fontSize: 20, fontWeight: 800 }}>Referrals</h2>
           {loadingReferral ? (
             <div style={{ color: 'var(--text-muted)', fontSize: 14 }}>Loading referral info...</div>

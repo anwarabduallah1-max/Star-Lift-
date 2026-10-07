@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
 import { PLATFORM_FEE, UPGRADE_COSTS } from '../lib/config'
 import type { Request } from '../lib/types'
+import { X, Image as ImageIcon, ArrowLeft } from 'lucide-react'
 import ShareStoryModal from '../components/ShareStoryModal'
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024
@@ -123,7 +124,7 @@ export default function CreateRequestPage() {
   return (
     <div style={{ minHeight: 'calc(100vh - 60px)', paddingBottom: 80, paddingTop: 40 }}>
       <div className="page-container" style={{ maxWidth: 720 }}>
-        <button className="btn-ghost" onClick={() => navigate('/')} style={{ marginBottom: 24, paddingLeft: 0 }}>← Back to Explore</button>
+        <button className="btn-ghost" onClick={() => navigate('/')} style={{ marginBottom: 24, paddingLeft: 0, display: 'inline-flex', alignItems: 'center', gap: 6 }}><ArrowLeft size={16} /> Back to Explore</button>
 
         <div style={{ marginBottom: 32 }}>
           <h1 style={{ margin: '0 0 8px', fontSize: 32, fontWeight: 900, letterSpacing: '-0.02em' }}>Create a Request</h1>
@@ -164,7 +165,7 @@ export default function CreateRequestPage() {
                   {!uploadedFile ? (
                     <div onClick={() => fileInputRef.current?.click()} onDragOver={e => { e.preventDefault(); setDragOver(true) }} onDragLeave={() => setDragOver(false)} onDrop={e => { e.preventDefault(); setDragOver(false); handleFileSelected(e.dataTransfer.files?.[0]) }}
                       style={{ border: `2px dashed ${dragOver ? 'var(--accent)' : 'var(--border)'}`, borderRadius: 12, padding: '32px 20px', textAlign: 'center', cursor: 'pointer', background: dragOver ? 'var(--accent-muted)' : 'var(--surface-raised)', transition: 'all 0.15s ease' }}>
-                      <div style={{ fontSize: 32, marginBottom: 10, opacity: 0.5 }}>📷</div>
+                      <div style={{ fontSize: 32, marginBottom: 10, opacity: 0.5, display: 'flex', justifyContent: 'center' }}><ImageIcon size={32} /></div>
                       <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 4 }}>{dragOver ? 'Drop image here' : 'Tap to upload or drag a photo'}</div>
                       <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>JPG, PNG, WEBP or GIF · up to 5 MB</div>
                       <input ref={fileInputRef} type="file" accept={ACCEPTED_TYPES.join(',')} onChange={e => handleFileSelected(e.target.files?.[0])} style={{ display: 'none' }} />
@@ -173,7 +174,7 @@ export default function CreateRequestPage() {
                     <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden', border: '1px solid var(--border)' }}>
                       <img src={URL.createObjectURL(uploadedFile)} alt="Preview" style={{ width: '100%', height: 200, objectFit: 'cover' }} />
                       <button type="button" onClick={() => { setUploadedFile(null); if (fileInputRef.current) fileInputRef.current.value = '' }}
-                        style={{ position: 'absolute', top: 10, right: 10, background: 'rgba(0,0,0,0.7)', border: '1px solid var(--border)', color: 'var(--text-primary)', width: 28, height: 28, borderRadius: '50%', cursor: 'pointer', fontSize: 14, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
+                        style={{ position: 'absolute', top: 10, right: 10, background: 'rgba(0,0,0,0.7)', border: '1px solid var(--border)', color: 'var(--text-primary)', width: 28, height: 28, borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><X size={14} /></button>
                       <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'rgba(0,0,0,0.6)', padding: '8px 12px', fontSize: 12, color: 'var(--text-primary)' }}>
                         {uploadedFile.name} · {(uploadedFile.size / 1024).toFixed(0)} KB
                       </div>
@@ -207,7 +208,7 @@ export default function CreateRequestPage() {
                       display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                       padding: '12px 14px', borderRadius: 10,
                       background: upgrade === opt.value ? 'var(--accent-muted)' : 'var(--surface-raised)',
-                      border: upgrade === opt.value ? '1px solid rgba(245,200,66,0.3)' : '1px solid var(--border)',
+                      border: upgrade === opt.value ? '1px solid rgba(255,200,1,0.3)' : '1px solid var(--border)',
                       cursor: 'pointer', textAlign: 'left',
                       transition: 'all 0.15s ease',
                     }}
@@ -259,13 +260,13 @@ export default function CreateRequestPage() {
                   <span style={{ fontSize: 13, color: 'var(--text-muted)' }}>+ ★ {fee.toFixed(1)}</span>
                 </div>
                 {upgradeCost > 0 && (
-                  <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 14px', background: 'var(--accent-muted)', borderRadius: 8, border: '1px solid rgba(245,200,66,0.2)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 14px', background: 'var(--accent-muted)', borderRadius: 8, border: '1px solid rgba(255,200,1,0.2)' }}>
                     <span style={{ fontSize: 13, color: 'var(--accent)' }}>Upgrade</span>
                     <span style={{ fontSize: 13, color: 'var(--accent)', fontWeight: 700 }}>+ ★ {upgradeCost}</span>
                   </div>
                 )}
                 <hr className="divider" />
-                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 14px', background: 'var(--accent-muted)', borderRadius: 8, border: '1px solid rgba(245,200,66,0.2)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 14px', background: 'var(--accent-muted)', borderRadius: 8, border: '1px solid rgba(255,200,1,0.2)' }}>
                   <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--accent)' }}>Total Goal</span>
                   <span style={{ fontSize: 18, fontWeight: 900, color: 'var(--accent)' }}>★ {finalTarget.toFixed(1)}</span>
                 </div>

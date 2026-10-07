@@ -77,7 +77,7 @@ export default function AvatarUpload({ userId, avatarPath, username, size = 112,
 
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 18 }}>
-      <button type="button" onClick={() => inputRef.current?.click()} disabled={loading} aria-label="Choose profile picture" style={{ position: 'relative', width: size, height: size, borderRadius: '50%', padding: 0, overflow: 'hidden', cursor: loading ? 'wait' : 'pointer', border: '2px solid rgba(245,200,66,0.4)', background: 'var(--accent-muted)', color: 'var(--accent)', flexShrink: 0 }}>
+      <button type="button" onClick={() => inputRef.current?.click()} disabled={loading} aria-label="Choose profile picture" style={{ position: 'relative', width: size, height: size, borderRadius: '50%', padding: 0, overflow: 'hidden', cursor: loading ? 'wait' : 'pointer', border: '2px solid rgba(255,200,1,0.4)', background: 'var(--accent-muted)', color: 'var(--accent)', flexShrink: 0 }}>
         {previewUrl ? <img src={previewUrl} alt="Profile preview" style={{ width: '100%', height: '100%', display: 'block', objectFit: 'cover', opacity: loading ? 0.45 : 1 }} /> : <span style={{ fontSize: size * 0.34, fontWeight: 800 }}>{(username?.[0] ?? 'U').toUpperCase()}</span>}
         {loading && <span style={{ position: 'absolute', inset: 0, display: 'grid', placeItems: 'center', color: '#fff', background: 'rgba(0,0,0,0.35)', fontSize: 12, fontWeight: 800 }}>Saving</span>}
       </button>

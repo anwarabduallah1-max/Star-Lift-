@@ -4,13 +4,14 @@ import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
 import { WHEEL_COST } from '../lib/config'
 import type { WheelCampaign } from '../lib/types'
+import { X, Disc3, PartyPopper } from 'lucide-react'
 
 interface Props {
   onClose: () => void
   onSpun: () => void
 }
 
-const SEGMENT_COLORS = ['#f5c842', '#3ecf8e', '#5b8def', '#f5c842', '#3ecf8e', '#5b8def']
+const SEGMENT_COLORS = ['#FFC801', '#3ecf8e', '#5b8def', '#FFC801', '#3ecf8e', '#5b8def']
 
 export default function SpinWheelModal({ onClose, onSpun }: Props) {
   const { profile, refreshProfile } = useAuth()
@@ -95,7 +96,7 @@ export default function SpinWheelModal({ onClose, onSpun }: Props) {
               </p>
             </div>
             {phase !== 'spinning' && (
-              <button className="btn-ghost" onClick={onClose} style={{ padding: '4px 10px', fontSize: 18 }}>✕</button>
+              <button className="btn-ghost" onClick={onClose} style={{ padding: '4px 10px' }}><X size={18} /></button>
             )}
           </div>
 
@@ -104,9 +105,9 @@ export default function SpinWheelModal({ onClose, onSpun }: Props) {
               <div style={{
                 width: 120, height: 120, borderRadius: '50%', margin: '0 auto 20px',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 48, background: 'var(--accent-muted)',
-                border: '2px solid rgba(245,200,66,0.3)',
-              }}>🎡</div>
+                background: 'var(--accent-muted)',
+                border: '2px solid rgba(255,200,1,0.3)',
+              }}><Disc3 size={48} color="var(--accent)" /></div>
               <div style={{ fontSize: 15, color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: 20 }}>
                 Spin the wheel for <span style={{ fontWeight: 800, color: 'var(--accent)' }}>★ {WHEEL_COST}</span> and your donation lands on a random campaign.
                 We prioritize campaigns with $0 raised first to give them visibility.
@@ -132,7 +133,7 @@ export default function SpinWheelModal({ onClose, onSpun }: Props) {
 
           {phase === 'fetching' && (
             <div style={{ textAlign: 'center', padding: '40px 0' }}>
-              <div style={{ fontSize: 40, marginBottom: 16, animation: 'wheel-spin 1.2s linear infinite' }}>🎡</div>
+              <div style={{ marginBottom: 16, animation: 'wheel-spin 1.2s linear infinite', display: 'flex', justifyContent: 'center' }}><Disc3 size={40} color="var(--accent)" /></div>
               <div style={{ fontSize: 14, color: 'var(--text-muted)' }}>Finding 6 campaigns that need your help...</div>
               <style>{`@keyframes wheel-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
             </div>
@@ -156,7 +157,7 @@ export default function SpinWheelModal({ onClose, onSpun }: Props) {
                     transform: `rotate(${rotation}deg)`,
                     overflow: 'hidden',
                     border: '4px solid var(--accent)',
-                    boxShadow: '0 0 24px rgba(245,200,66,0.2)',
+                    boxShadow: '0 0 24px rgba(255,200,1,0.2)',
                   }}
                 >
                   <svg viewBox="0 0 200 200" style={{ width: '100%', height: '100%' }}>
@@ -207,7 +208,7 @@ export default function SpinWheelModal({ onClose, onSpun }: Props) {
 
           {phase === 'result' && winningCampaign && (
             <div style={{ textAlign: 'center', padding: '20px 0' }}>
-              <div style={{ fontSize: 56, marginBottom: 12 }}>🎉</div>
+              <div style={{ marginBottom: 12, display: 'flex', justifyContent: 'center' }}><PartyPopper size={56} color="var(--accent)" /></div>
               <h3 style={{ margin: '0 0 8px', fontSize: 20, fontWeight: 800, color: 'var(--text-primary)' }}>
                 Your ★ {WHEEL_COST} landed on...
               </h3>

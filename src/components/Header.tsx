@@ -49,7 +49,7 @@ export default function Header() {
                 <button
                   className="stars-badge"
                   onClick={() => setWalletOpen(true)}
-                  style={{ cursor: 'pointer', border: '1px solid rgba(245,200,66,0.25)', background: 'var(--accent-muted)' }}
+                  style={{ cursor: 'pointer', border: '1px solid rgba(255,200,1,0.25)', background: 'var(--accent-muted)' }}
                 >
                   <span>★</span>
                   <span>{profile?.stars_balance?.toFixed(0) ?? '0'}</span>
@@ -67,7 +67,7 @@ export default function Header() {
                     style={{
                       width: 36, height: 36, borderRadius: '50%',
                       background: 'var(--accent-muted)',
-                      border: '1px solid rgba(245,200,66,0.25)',
+                      border: '1px solid rgba(255,200,1,0.25)',
                       color: 'var(--accent)',
                       fontSize: 14, fontWeight: 700,
                       cursor: 'pointer',

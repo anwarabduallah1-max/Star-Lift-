@@ -6,6 +6,7 @@ import type { Request } from '../lib/types'
 import RequestCard from '../components/RequestCard'
 import DonateModal from '../components/DonateModal'
 import SpinWheelModal from '../components/SpinWheelModal'
+import { Disc3, ArrowDown } from 'lucide-react'
 import Leaderboard from '../components/Leaderboard'
 import GlobalLeaderboard from '../components/GlobalLeaderboard'
 
@@ -115,14 +116,14 @@ export default function ExplorePage() {
   return (
     <div style={{ minHeight: 'calc(100vh - 60px)', paddingBottom: 80 }}>
       <div style={{
-        background: 'linear-gradient(180deg, rgba(245,200,66,0.05) 0%, transparent 100%)',
+        background: 'linear-gradient(180deg, rgba(255,200,1,0.05) 0%, transparent 100%)',
         borderBottom: '1px solid var(--border)', padding: '48px 0 40px',
       }}>
         <div className="page-container">
           <div style={{ maxWidth: 560 }}>
             <div style={{
               display: 'inline-flex', alignItems: 'center', gap: 8,
-              background: 'var(--accent-muted)', border: '1px solid rgba(245,200,66,0.2)',
+              background: 'var(--accent-muted)', border: '1px solid rgba(255,200,1,0.2)',
               borderRadius: 999, padding: '5px 14px', fontSize: 12, fontWeight: 700,
               color: 'var(--accent)', marginBottom: 20, letterSpacing: '0.05em', textTransform: 'uppercase',
             }}><span>★</span> Stars-powered crowdfunding</div>
@@ -138,7 +139,7 @@ export default function ExplorePage() {
                 Create a Request
               </button>
               <button className="btn-secondary" onClick={() => { setTab('requests'); document.getElementById('requests-grid')?.scrollIntoView({ behavior: 'smooth' }) }}>
-                Browse Requests ↓
+                Browse Requests <ArrowDown size={14} style={{ display: 'inline' }} />
               </button>
               <button
                 onClick={() => user ? setWheelOpen(true) : navigate('/login')}
@@ -147,13 +148,14 @@ export default function ExplorePage() {
                   background: 'linear-gradient(135deg, #f5c842, #f7d265)',
                   color: '#0d0f14', fontWeight: 800, cursor: 'pointer',
                   display: 'flex', alignItems: 'center', gap: 8,
-                  boxShadow: '0 4px 16px rgba(245,200,66,0.25)',
+                  boxShadow: '0 4px 16px rgba(255,200,1,0.25)',
                   transition: 'transform 0.2s ease',
                 }}
                 onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.03)' }}
                 onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)' }}
               >
-                🎡 Spin Wheel ($1)
+                <Disc3 size={18} />
+                Spin Wheel ($1)
               </button>
             </div>
           </div>

@@ -72,7 +72,7 @@ export default function Navbar() {
                   aria-label="Open profile settings"
                   style={{
                     width: 32, height: 32, borderRadius: '50%', overflow: 'hidden', padding: 0,
-                    border: '1px solid rgba(245,200,66,0.35)', background: 'var(--accent-muted)',
+                    border: '1px solid rgba(255,200,1,0.35)', background: 'var(--accent-muted)',
                     color: 'var(--accent)', cursor: 'pointer', fontWeight: 800,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                   }}

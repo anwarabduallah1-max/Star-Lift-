@@ -6,7 +6,7 @@ import { useToast } from '../context/ToastContext'
 import { getAvatarSignedUrl } from '../components/AvatarUpload'
 import { SQUAD_MAX_MEMBERS } from '../lib/config'
 import type { Squad } from '../lib/types'
-import { Crown, Award, Shield } from 'lucide-react'
+import { Crown, Award, Shield, Rocket } from 'lucide-react'
 
 export default function SquadPage() {
   const { user } = useAuth()
@@ -151,8 +151,8 @@ export default function SquadPage() {
         {squad ? (
           <>
             <div style={{
-              background: 'linear-gradient(145deg, rgba(245,200,66,0.08), var(--surface-raised))',
-              border: '1px solid rgba(245,200,66,0.25)',
+              background: 'linear-gradient(145deg, rgba(255,200,1,0.08), var(--surface-raised))',
+              border: '1px solid rgba(255,200,1,0.25)',
               borderRadius: 16, padding: 28, marginBottom: 24, textAlign: 'center',
             }}>
               <div style={{ fontSize: 12, fontWeight: 800, color: 'var(--accent)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 8 }}>
@@ -186,8 +186,8 @@ export default function SquadPage() {
                     padding: '16px 20px', borderRadius: 12,
                     background: 'var(--surface-raised)', border: '1px solid var(--border)',
                     ...(isTop ? {
-                      borderColor: 'rgba(245,200,66,0.3)',
-                      boxShadow: '0 0 16px rgba(245,200,66,0.08)',
+                      borderColor: 'rgba(255,200,1,0.3)',
+                      boxShadow: '0 0 16px rgba(255,200,1,0.08)',
                     } : {}),
                   }}>
                     <div style={{
@@ -197,7 +197,7 @@ export default function SquadPage() {
                       ...(isTop ? {
                         background: 'linear-gradient(135deg, #f5c842, #f7d265)',
                         color: '#0d0f14',
-                        boxShadow: '0 0 12px rgba(245,200,66,0.4)',
+                        boxShadow: '0 0 12px rgba(255,200,1,0.4)',
                       } : {
                         background: 'var(--surface)',
                         color: i === 1 ? 'var(--text-secondary)' : 'var(--text-muted)',
@@ -264,10 +264,10 @@ export default function SquadPage() {
               return (
                 <div style={{
                   marginTop: 20, padding: '14px 18px', borderRadius: 10,
-                  background: 'rgba(245,200,66,0.06)', border: '1px solid rgba(245,200,66,0.2)',
+                  background: 'rgba(255,200,1,0.06)', border: '1px solid rgba(255,200,1,0.2)',
                   textAlign: 'center', fontSize: 14, fontWeight: 600, color: 'var(--accent)',
                 }}>
-                  Boost your amount to rank higher! 🚀
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>Boost your amount to rank higher! <Rocket size={16} /></span>
                 </div>
               )
             })()}

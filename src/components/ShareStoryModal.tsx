@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { useToast } from '../context/ToastContext'
 import type { Request } from '../lib/types'
+import { X } from 'lucide-react'
 
 interface Props {
   request: Request
@@ -37,10 +38,10 @@ export default function ShareStoryModal({ request, referralCode, onClose }: Prop
               <h2 style={{ margin: '5px 0 4px', fontSize: 22, fontWeight: 900 }}>Put this campaign in your story</h2>
               <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: 13 }}>Invite your friends and help {request.title} reach its goal.</p>
             </div>
-            <button className="btn-ghost" onClick={onClose} style={{ padding: '4px 10px', fontSize: 18 }}>✕</button>
+            <button className="btn-ghost" onClick={onClose} style={{ padding: '4px 10px' }}><X size={18} /></button>
           </div>
 
-          <div style={{ background: 'linear-gradient(145deg, #282817, #161922 55%, #0d0f14)', border: '1px solid rgba(245,200,66,0.35)', borderRadius: 18, padding: 20, minHeight: 290, display: 'flex', gap: 18, alignItems: 'center' }}>
+          <div style={{ background: 'linear-gradient(145deg, #282817, #161922 55%, #0d0f14)', border: '1px solid rgba(255,200,1,0.35)', borderRadius: 18, padding: 20, minHeight: 290, display: 'flex', gap: 18, alignItems: 'center' }}>
             <div style={{ flex: 1 }}>
               <div style={{ fontSize: 12, color: 'var(--accent)', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 14 }}>StarLift campaign</div>
               <h3 style={{ margin: '0 0 10px', fontSize: 24, lineHeight: 1.1, fontWeight: 900 }}>{request.title}</h3>

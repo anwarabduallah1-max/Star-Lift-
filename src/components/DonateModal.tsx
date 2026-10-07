@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
 import { supabase } from '../lib/supabase'
 import { DONOR_FEE_PERCENT } from '../lib/config'
+import { X } from 'lucide-react'
 import ShareStoryModal from './ShareStoryModal'
 
 interface Props {
@@ -65,7 +66,7 @@ export default function DonateModal({ request, onClose, onDonated }: Props) {
               <h2 style={{ margin: '0 0 4px', fontSize: 20, fontWeight: 800 }}>Donate Stars</h2>
               <p style={{ margin: 0, fontSize: 14, color: 'var(--text-secondary)' }}>{request.title}</p>
             </div>
-            <button className="btn-ghost" onClick={onClose} style={{ padding: '4px 10px', fontSize: 18 }}>✕</button>
+            <button className="btn-ghost" onClick={onClose} style={{ padding: '4px 10px' }}><X size={18} /></button>
           </div>
 
           {request.image_url && (
@@ -161,7 +162,7 @@ export default function DonateModal({ request, onClose, onDonated }: Props) {
             display: 'flex', justifyContent: 'space-between',
             padding: '10px 14px', marginBottom: 14,
             background: 'var(--accent-muted)', borderRadius: 8,
-            border: '1px solid rgba(245,200,66,0.2)',
+            border: '1px solid rgba(255,200,1,0.2)',
             fontSize: 14, fontWeight: 700, color: 'var(--accent)',
           }}>
             <span>Total</span>

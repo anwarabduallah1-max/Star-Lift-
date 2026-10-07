@@ -38,8 +38,8 @@ export default function RequestCard({ request, onClick }: Props) {
         flexDirection: 'column',
         position: 'relative',
         ...(isGold ? {
-          borderColor: 'rgba(245,200,66,0.5)',
-          boxShadow: '0 0 0 2px rgba(245,200,66,0.2), 0 8px 32px rgba(245,200,66,0.12)',
+          borderColor: 'rgba(255,200,1,0.5)',
+          boxShadow: '0 0 0 2px rgba(255,200,1,0.2), 0 8px 32px rgba(255,200,1,0.12)',
         } : {}),
       }}
     >
@@ -105,7 +105,7 @@ export default function RequestCard({ request, onClick }: Props) {
             borderRadius: 999,
             padding: '4px 10px',
             zIndex: 2,
-            boxShadow: '0 2px 12px rgba(245,200,66,0.4)',
+            boxShadow: '0 2px 12px rgba(255,200,1,0.4)',
           }}>
             <span style={{ fontSize: 11, fontWeight: 900, color: '#0d0f14', letterSpacing: '0.05em' }}>★</span>
             <span style={{ fontSize: 10, fontWeight: 800, color: '#0d0f14', letterSpacing: '0.05em', textTransform: 'uppercase' }}>Gold</span>
@@ -158,7 +158,7 @@ export default function RequestCard({ request, onClick }: Props) {
             </span>
             <span style={{
               fontSize: 10, fontWeight: 700, color: 'var(--accent)',
-              background: 'var(--accent-muted)', border: '1px solid rgba(245,200,66,0.3)',
+              background: 'var(--accent-muted)', border: '1px solid rgba(255,200,1,0.3)',
               padding: '2px 8px', borderRadius: 999, letterSpacing: '0.05em', textTransform: 'uppercase',
             }}>Unlimited</span>
           </div>
@@ -205,7 +205,7 @@ export default function RequestCard({ request, onClick }: Props) {
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 transition: 'all 0.2s ease',
               }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(245,200,66,0.4)'; e.currentTarget.style.color = 'var(--accent)' }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(255,200,1,0.4)'; e.currentTarget.style.color = 'var(--accent)' }}
               onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.12)'; e.currentTarget.style.color = 'var(--text-muted)' }}
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

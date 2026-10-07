@@ -7,13 +7,13 @@
   --surface-raised: #1e222d;
   --border: rgba(255,255,255,0.08);
   --border-subtle: rgba(255,255,255,0.05);
-  --accent: #f5c842;
-  --accent-hover: #f7d265;
-  --accent-muted: rgba(245,200,66,0.12);
+  --accent: #FFC801;
+  --accent-hover: #FFD633;
+  --accent-muted: rgba(255,200,1,0.12);
   --text-primary: #f0f2f7;
   --text-secondary: #8b90a0;
   --text-muted: #565c70;
-  --star-glow: rgba(245,200,66,0.3);
+  --star-glow: rgba(255,200,1,0.3);
   --success: #3ecf8e;
   --error: #f06060;
   --radius-sm: 6px;
@@ -99,7 +99,7 @@ html, body, #root {
   align-items: center;
   gap: 5px;
   background: var(--accent-muted);
-  border: 1px solid rgba(245,200,66,0.2);
+  border: 1px solid rgba(255,200,1,0.2);
   color: var(--accent);
   border-radius: 999px;
   padding: 3px 10px;
@@ -260,7 +260,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
 }
 .chip.active, .chip:hover {
   background: var(--accent-muted);
-  border-color: rgba(245,200,66,0.3);
+  border-color: rgba(255,200,1,0.3);
   color: var(--accent);
 }
 
@@ -330,7 +330,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
   height: 36px;
   border-radius: 50%;
   background: var(--accent-muted);
-  border: 1px solid rgba(245,200,66,0.25);
+  border: 1px solid rgba(255,200,1,0.25);
   display: flex;
   align-items: center;
   justify-content: center;

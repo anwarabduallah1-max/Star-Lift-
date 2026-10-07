@@ -4,6 +4,8 @@ import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
 import { supabase } from '../lib/supabase'
 import { UPGRADE_COSTS } from '../lib/config'
+import { X, ArrowUp, BadgeCheck, Star } from 'lucide-react'
+import type { ReactNode } from 'react'
 
 interface Props {
   request: Request
@@ -18,13 +20,13 @@ interface UpgradeOption {
   name: string
   cost: number
   description: string
-  icon: string
+  icon: ReactNode
 }
 
 const OPTIONS: UpgradeOption[] = [
-  { type: 'bump', name: 'Bump to Top', cost: UPGRADE_COSTS.bump, description: 'Move your request to the top of the Explore feed.', icon: '⬆' },
-  { type: 'verified', name: 'Verified Badge', cost: UPGRADE_COSTS.verified, description: 'Add a verified badge to your request card.', icon: '✓' },
-  { type: 'gold', name: 'Gold Wish Bundle', cost: UPGRADE_COSTS.gold, description: 'Premium gold card styling, verified badge, and bump to top.', icon: '★' },
+  { type: 'bump', name: 'Bump to Top', cost: UPGRADE_COSTS.bump, description: 'Move your request to the top of the Explore feed.', icon: <ArrowUp size={20} /> },
+  { type: 'verified', name: 'Verified Badge', cost: UPGRADE_COSTS.verified, description: 'Add a verified badge to your request card.', icon: <BadgeCheck size={20} /> },
+  { type: 'gold', name: 'Gold Wish Bundle', cost: UPGRADE_COSTS.gold, description: 'Premium gold card styling, verified badge, and bump to top.', icon: <Star size={20} fill="currentColor" /> },
 ]
 
 export default function UpgradeModal({ request, onClose, onUpgraded }: Props) {
@@ -77,7 +79,7 @@ export default function UpgradeModal({ request, onClose, onUpgraded }: Props) {
               <h2 style={{ margin: '0 0 4px', fontSize: 20, fontWeight: 800 }}>Boost Your Request</h2>
               <p style={{ margin: 0, fontSize: 14, color: 'var(--text-secondary)' }}>{request.title}</p>
             </div>
-            <button className="btn-ghost" onClick={onClose} style={{ padding: '4px 10px', fontSize: 18 }}>✕</button>
+            <button className="btn-ghost" onClick={onClose} style={{ padding: '4px 10px' }}><X size={18} /></button>
           </div>
 
           <div style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 16 }}>
@@ -93,8 +95,8 @@ export default function UpgradeModal({ request, onClose, onUpgraded }: Props) {
               return (
                 <div key={opt.type} style={{
                   padding: '16px',
-                  background: opt.type === 'gold' ? 'linear-gradient(145deg, rgba(245,200,66,0.08), var(--surface-raised))' : 'var(--surface-raised)',
-                  border: opt.type === 'gold' ? '1px solid rgba(245,200,66,0.25)' : '1px solid var(--border)',
+                  background: opt.type === 'gold' ? 'linear-gradient(145deg, rgba(255,200,1,0.08), var(--surface-raised))' : 'var(--surface-raised)',
+                  border: opt.type === 'gold' ? '1px solid rgba(255,200,1,0.25)' : '1px solid var(--border)',
                   borderRadius: 12,
                   display: 'flex', alignItems: 'center', gap: 14,
                 }}>
@@ -102,9 +104,8 @@ export default function UpgradeModal({ request, onClose, onUpgraded }: Props) {
                     width: 40, height: 40, borderRadius: 10,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     fontSize: 20, flexShrink: 0,
-                    background: opt.type === 'gold' ? 'linear-gradient(135deg, #f5c842, #f7d265)' : 'var(--accent-muted)',
+                    background: opt.type === 'gold' ? 'linear-gradient(135deg, #FFC801, #FFD633)' : 'var(--accent-muted)',
                     color: opt.type === 'gold' ? '#0d0f14' : 'var(--accent)',
-                    fontWeight: 900,
                   }}>{opt.icon}</div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>

@@ -48,10 +48,10 @@ function VipBadge() {
   return (
     <span style={{
       display: 'inline-flex', alignItems: 'center', gap: 3,
-      background: 'linear-gradient(135deg, #f5c842, #f7d265)',
+      background: 'linear-gradient(135deg, #FFC801, #FFD633)',
       color: '#0d0f14', borderRadius: 999, padding: '2px 8px',
       fontSize: 10, fontWeight: 900, letterSpacing: '0.05em',
-      boxShadow: '0 0 8px rgba(245,200,66,0.4)', whiteSpace: 'nowrap',
+      boxShadow: '0 0 8px rgba(255,200,1,0.4)', whiteSpace: 'nowrap',
     }}>
       ♛ VIP
     </span>
@@ -62,9 +62,9 @@ function StatCard({ children, label, accent }: { children: React.ReactNode; labe
   return (
     <div className="card" style={{
       padding: 22, flex: '1 1 280px', position: 'relative', overflow: 'hidden',
-      borderColor: accent ? 'rgba(245,200,66,0.25)' : undefined,
+      borderColor: accent ? 'rgba(255,200,1,0.25)' : undefined,
     }}>
-      {accent && <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle at top right, rgba(245,200,66,0.06), transparent 70%)', pointerEvents: 'none' }} />}
+      {accent && <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle at top right, rgba(255,200,1,0.06), transparent 70%)', pointerEvents: 'none' }} />}
       <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: 14, position: 'relative' }}>{label}</div>
       <div style={{ position: 'relative' }}>{children}</div>
     </div>
@@ -197,7 +197,7 @@ export default function GlobalLeaderboard() {
               <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
                 <div style={{ position: 'relative' }}>
                   <AvatarWithSignedUrl avatarPath={topDonor.avatar_url} username={topDonor.username} size={48} />
-                  <div style={{ position: 'absolute', top: -6, right: -6, background: 'linear-gradient(135deg, #f5c842, #f7d265)', borderRadius: '50%', width: 22, height: 22, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, boxShadow: '0 0 8px rgba(245,200,66,0.5)' }}>♛</div>
+                  <div style={{ position: 'absolute', top: -6, right: -6, background: 'linear-gradient(135deg, #FFC801, #FFD633)', borderRadius: '50%', width: 22, height: 22, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, boxShadow: '0 0 8px rgba(255,200,1,0.5)' }}>♛</div>
                 </div>
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -254,14 +254,14 @@ export default function GlobalLeaderboard() {
                   className="card"
                   style={{
                     padding: 18, position: 'relative', overflow: 'hidden',
-                    borderColor: isTopCountry ? 'rgba(245,200,66,0.3)' : undefined,
-                    boxShadow: isTopCountry ? '0 0 16px rgba(245,200,66,0.1)' : undefined,
+                    borderColor: isTopCountry ? 'rgba(255,200,1,0.3)' : undefined,
+                    boxShadow: isTopCountry ? '0 0 16px rgba(255,200,1,0.1)' : undefined,
                     opacity: hasDonations ? 1 : 0.55,
                     transition: 'box-shadow 0.2s ease, border-color 0.2s ease, transform 0.2s ease',
                   }}
                 >
                   {isTopCountry && (
-                    <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle at top right, rgba(245,200,66,0.06), transparent 70%)', pointerEvents: 'none' }} />
+                    <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle at top right, rgba(255,200,1,0.06), transparent 70%)', pointerEvents: 'none' }} />
                   )}
 
                   <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14, position: 'relative' }}>
@@ -284,12 +284,12 @@ export default function GlobalLeaderboard() {
                     <div style={{
                       display: 'flex', alignItems: 'center', gap: 10,
                       padding: '10px 12px', borderRadius: 10, position: 'relative',
-                      background: 'linear-gradient(135deg, rgba(245,200,66,0.08), rgba(245,200,66,0.02))',
-                      border: '1px solid rgba(245,200,66,0.2)',
+                      background: 'linear-gradient(135deg, rgba(255,200,1,0.08), rgba(255,200,1,0.02))',
+                      border: '1px solid rgba(255,200,1,0.2)',
                     }}>
                       <div style={{ position: 'relative' }}>
                         <AvatarWithSignedUrl avatarPath={row.top_donor_avatar_url} username={row.top_donor_username} size={32} />
-                        <div style={{ position: 'absolute', top: -4, right: -4, background: 'linear-gradient(135deg, #f5c842, #f7d265)', borderRadius: '50%', width: 16, height: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, color: '#0d0f14', fontWeight: 900, boxShadow: '0 0 6px rgba(245,200,66,0.5)' }}>♛</div>
+                        <div style={{ position: 'absolute', top: -4, right: -4, background: 'linear-gradient(135deg, #FFC801, #FFD633)', borderRadius: '50%', width: 16, height: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, color: '#0d0f14', fontWeight: 900, boxShadow: '0 0 6px rgba(255,200,1,0.5)' }}>♛</div>
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
