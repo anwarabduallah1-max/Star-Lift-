@@ -7,6 +7,7 @@ import RequestCard from '../components/RequestCard'
 import DonateModal from '../components/DonateModal'
 import UpgradeModal from '../components/UpgradeModal'
 import { UPGRADE_COSTS } from '../lib/config'
+import { BadgeCheck, ArrowUp, Zap } from 'lucide-react'
 
 export default function MyRequestsPage() {
   const { user } = useAuth()
@@ -39,7 +40,7 @@ export default function MyRequestsPage() {
 
   const activeBadges = (r: Request) => {
     const badges: { label: string; color: string; bg: string }[] = []
-    if (r.is_gold) badges.push({ label: '★ Gold', color: '#0d0f14', bg: 'linear-gradient(135deg, #f5c842, #f7d265)' })
+    if (r.is_gold) badges.push({ label: '★ Gold', color: '#0d0f14', bg: 'linear-gradient(135deg, #FFC801, #FFD633)' })
     if (r.is_verified) badges.push({ label: '✓ Verified', color: 'var(--accent)', bg: 'var(--accent-muted)' })
     if (r.bumped_at) badges.push({ label: '⬆ Bumped', color: 'var(--accent)', bg: 'var(--accent-muted)' })
     return badges
@@ -111,12 +112,12 @@ export default function MyRequestsPage() {
                         display: 'flex', alignItems: 'center', gap: 4,
                         whiteSpace: 'nowrap',
                         transition: 'all 0.2s ease',
-                        ...(allUpgrades ? {} : { boxShadow: '0 2px 8px rgba(245,200,66,0.25)' }),
+                        ...(allUpgrades ? {} : { boxShadow: '0 2px 8px rgba(255,200,1,0.25)' }),
                       }}
                       onMouseEnter={e => { if (!allUpgrades) { e.currentTarget.style.transform = 'scale(1.03)' } }}
                       onMouseLeave={e => { if (!allUpgrades) { e.currentTarget.style.transform = 'scale(1)' } }}
                     >
-                      {allUpgrades ? 'Maxed' : '⚡ Boost'}
+                      {allUpgrades ? 'Maxed' : <><Zap size={12} /> Boost</>}
                     </button>
                   </div>
                 </div>

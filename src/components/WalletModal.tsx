@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
 import { supabase, supabaseApiKey, supabaseApiUrl } from '../lib/supabase'
 import { safeFetchJson } from '../lib/safeFetch'
-import { X } from 'lucide-react'
+import { X, Check } from 'lucide-react'
 
 const PACKAGES = [
   { stars: 10,  price: 10,  label: 'Starter' },
@@ -490,9 +490,9 @@ export default function WalletModal({ onClose }: Props) {
                 background: 'rgba(62,207,142,0.12)',
                 border: '2px solid var(--success)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 32, color: 'var(--success)',
+                color: 'var(--success)',
               }}>
-                ✓
+                <Check size={32} />
               </div>
               <div style={{ textAlign: 'center' }}>
                 <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--text-primary)', marginBottom: 4 }}>

@@ -3,6 +3,7 @@ import { supabase } from '../lib/supabase'
 import { COUNTRIES, COUNTRY_MAP } from '../lib/countries'
 import type { CountryLeaderboardEntry, Supporter } from '../lib/types'
 import { getAvatarSignedUrl } from './AvatarUpload'
+import { Crown } from 'lucide-react'
 
 interface CountryRow extends CountryLeaderboardEntry {
   country_name: string
@@ -53,7 +54,7 @@ function VipBadge() {
       fontSize: 10, fontWeight: 900, letterSpacing: '0.05em',
       boxShadow: '0 0 8px rgba(255,200,1,0.4)', whiteSpace: 'nowrap',
     }}>
-      ♛ VIP
+      <Crown size={11} fill="currentColor" /> VIP
     </span>
   )
 }
@@ -197,7 +198,7 @@ export default function GlobalLeaderboard() {
               <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
                 <div style={{ position: 'relative' }}>
                   <AvatarWithSignedUrl avatarPath={topDonor.avatar_url} username={topDonor.username} size={48} />
-                  <div style={{ position: 'absolute', top: -6, right: -6, background: 'linear-gradient(135deg, #FFC801, #FFD633)', borderRadius: '50%', width: 22, height: 22, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, boxShadow: '0 0 8px rgba(255,200,1,0.5)' }}>♛</div>
+                  <div style={{ position: 'absolute', top: -6, right: -6, background: 'linear-gradient(135deg, #FFC801, #FFD633)', borderRadius: '50%', width: 22, height: 22, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, boxShadow: '0 0 8px rgba(255,200,1,0.5)' }}><Crown size={12} fill="currentColor" color="#0d0f14" /></div>
                 </div>
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -272,7 +273,7 @@ export default function GlobalLeaderboard() {
                         {hasDonations ? `#${row.rank} · ${row.donor_count} donor${row.donor_count !== 1 ? 's' : ''}` : 'No donations yet'}
                       </div>
                     </div>
-                    {isTopCountry && <span style={{ fontSize: 16 }}>♛</span>}
+                    {isTopCountry && <Crown size={16} color="var(--accent)" fill="var(--accent)" />}
                   </div>
 
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12, position: 'relative' }}>
@@ -289,7 +290,7 @@ export default function GlobalLeaderboard() {
                     }}>
                       <div style={{ position: 'relative' }}>
                         <AvatarWithSignedUrl avatarPath={row.top_donor_avatar_url} username={row.top_donor_username} size={32} />
-                        <div style={{ position: 'absolute', top: -4, right: -4, background: 'linear-gradient(135deg, #FFC801, #FFD633)', borderRadius: '50%', width: 16, height: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, color: '#0d0f14', fontWeight: 900, boxShadow: '0 0 6px rgba(255,200,1,0.5)' }}>♛</div>
+                        <div style={{ position: 'absolute', top: -4, right: -4, background: 'linear-gradient(135deg, #FFC801, #FFD633)', borderRadius: '50%', width: 16, height: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, color: '#0d0f14', fontWeight: 900, boxShadow: '0 0 6px rgba(255,200,1,0.5)' }}><Crown size={9} fill="currentColor" color="#0d0f14" /></div>
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
