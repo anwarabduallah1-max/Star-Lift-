@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import { useToast } from '../context/ToastContext'
+import ProgressiveImage from './ProgressiveImage'
 
 interface AvatarUploadProps {
   userId: string
@@ -78,7 +79,7 @@ export default function AvatarUpload({ userId, avatarPath, username, size = 112,
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 18 }}>
       <button type="button" onClick={() => inputRef.current?.click()} disabled={loading} aria-label="Choose profile picture" style={{ position: 'relative', width: size, height: size, borderRadius: '50%', padding: 0, overflow: 'hidden', cursor: loading ? 'wait' : 'pointer', border: '2px solid rgba(255,200,1,0.4)', background: 'var(--accent-muted)', color: 'var(--accent)', flexShrink: 0 }}>
-        {previewUrl ? <img src={previewUrl} alt="Profile preview" style={{ width: '100%', height: '100%', display: 'block', objectFit: 'cover', opacity: loading ? 0.45 : 1 }} /> : <span style={{ fontSize: size * 0.34, fontWeight: 800 }}>{(username?.[0] ?? 'U').toUpperCase()}</span>}
+        {previewUrl ? <ProgressiveImage src={previewUrl} alt="Profile preview" loading="eager" skeleton={false} style={{ width: '100%', height: '100%' }} /> : <span style={{ fontSize: size * 0.34, fontWeight: 800 }}>{(username?.[0] ?? 'U').toUpperCase()}</span>}
         {loading && <span style={{ position: 'absolute', inset: 0, display: 'grid', placeItems: 'center', color: '#fff', background: 'rgba(0,0,0,0.35)', fontSize: 12, fontWeight: 800 }}>Saving</span>}
       </button>
       <div><input ref={inputRef} type="file" accept="image/png,image/jpeg,image/webp,image/gif" onChange={handleSelect} hidden /><div style={{ fontSize: 15, fontWeight: 750, color: 'var(--text-primary)' }}>Profile picture</div><div style={{ color: 'var(--text-muted)', fontSize: 12, marginTop: 5, lineHeight: 1.5 }}>JPG, PNG, WEBP, or GIF. Maximum 5 MB.</div><button type="button" className="btn-secondary" onClick={() => inputRef.current?.click()} disabled={loading} style={{ marginTop: 10, padding: '7px 12px', fontSize: 12 }}>{loading ? 'Uploading...' : previewUrl ? 'Change picture' : 'Choose picture'}</button></div>

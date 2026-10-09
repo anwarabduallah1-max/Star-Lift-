@@ -7,6 +7,7 @@ import { PLATFORM_FEE, UPGRADE_COSTS } from '../lib/config'
 import type { Request } from '../lib/types'
 import { X, Image as ImageIcon, ArrowLeft } from 'lucide-react'
 import ShareStoryModal from '../components/ShareStoryModal'
+import ProgressiveImage from '../components/ProgressiveImage'
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024
 const ACCEPTED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
@@ -155,7 +156,7 @@ export default function CreateRequestPage() {
                   <input className="field-input" type="url" placeholder="https://example.com/product.jpg" value={imageUrl} onChange={e => { setImageUrl(e.target.value); setImagePreviewError(false) }} />
                   {imageUrl && !imagePreviewError && (
                     <div style={{ marginTop: 10, borderRadius: 8, overflow: 'hidden', border: '1px solid var(--border)', height: 160 }}>
-                      <img src={imageUrl} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={() => setImagePreviewError(true)} />
+                      <ProgressiveImage src={imageUrl} alt="Preview" loading="eager" style={{ width: '100%', height: '100%' }} onError={() => setImagePreviewError(true)} />
                     </div>
                   )}
                   {imagePreviewError && <div style={{ marginTop: 8, fontSize: 13, color: 'var(--error)' }}>Could not load image from that URL.</div>}
@@ -172,7 +173,7 @@ export default function CreateRequestPage() {
                     </div>
                   ) : (
                     <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden', border: '1px solid var(--border)' }}>
-                      <img src={URL.createObjectURL(uploadedFile)} alt="Preview" style={{ width: '100%', height: 200, objectFit: 'cover' }} />
+                      <ProgressiveImage src={URL.createObjectURL(uploadedFile)} alt="Preview" loading="eager" style={{ width: '100%', height: 200 }} />
                       <button type="button" onClick={() => { setUploadedFile(null); if (fileInputRef.current) fileInputRef.current.value = '' }}
                         style={{ position: 'absolute', top: 10, right: 10, background: 'rgba(0,0,0,0.7)', border: '1px solid var(--border)', color: 'var(--text-primary)', width: 28, height: 28, borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><X size={14} /></button>
                       <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'rgba(0,0,0,0.6)', padding: '8px 12px', fontSize: 12, color: 'var(--text-primary)' }}>

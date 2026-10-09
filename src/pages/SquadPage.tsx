@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
 import { getAvatarSignedUrl } from '../components/AvatarUpload'
+import ProgressiveImage from '../components/ProgressiveImage'
 import { SQUAD_MAX_MEMBERS } from '../lib/config'
 import type { Squad } from '../lib/types'
 import { Crown, Award, Shield, Rocket } from 'lucide-react'
@@ -209,7 +210,7 @@ export default function SquadPage() {
 
                     <div className="avatar" style={{ width: 36, height: 36, fontSize: 14, flexShrink: 0, overflow: 'hidden' }}>
                       {avatarUrls[m.user_id] ? (
-                        <img src={avatarUrls[m.user_id]!} alt={m.username} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        <ProgressiveImage src={avatarUrls[m.user_id]!} alt={m.username} loading="lazy" skeleton={false} style={{ width: '100%', height: '100%', borderRadius: '50%' }} />
                       ) : (
                         (m.username?.[0] ?? 'U').toUpperCase()
                       )}

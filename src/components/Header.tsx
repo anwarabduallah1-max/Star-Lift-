@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
 import WalletModal from './WalletModal'
 import { getAvatarSignedUrl } from './AvatarUpload'
+import ProgressiveImage from './ProgressiveImage'
 
 export default function Header() {
   const { user, profile, signOut } = useAuth()
@@ -74,7 +75,7 @@ export default function Header() {
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                     }}
                   >
-                    {avatarUrl ? <img src={avatarUrl} alt="Your profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : (profile?.username?.[0] ?? user.email?.[0] ?? 'U').toUpperCase()}
+                    {avatarUrl ? <ProgressiveImage src={avatarUrl} alt="Your profile" loading="lazy" skeleton={false} style={{ width: '100%', height: '100%' }} /> : (profile?.username?.[0] ?? user.email?.[0] ?? 'U').toUpperCase()}
                   </button>
                   {menuOpen && (
                     <div

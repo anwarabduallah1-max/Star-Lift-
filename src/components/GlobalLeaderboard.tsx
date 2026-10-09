@@ -4,6 +4,7 @@ import { COUNTRIES, COUNTRY_MAP } from '../lib/countries'
 import type { CountryLeaderboardEntry, Supporter } from '../lib/types'
 import { getAvatarSignedUrl } from './AvatarUpload'
 import { Crown } from 'lucide-react'
+import ProgressiveImage from './ProgressiveImage'
 
 interface CountryRow extends CountryLeaderboardEntry {
   country_name: string
@@ -36,7 +37,7 @@ function AvatarWithSignedUrl({ avatarPath, username, size = 36 }: { avatarPath: 
     return () => { active = false }
   }, [avatarPath])
   if (url) {
-    return <img src={url} alt={username} loading="lazy" style={{ width: size, height: size, borderRadius: '50%', objectFit: 'cover', border: '1px solid var(--border)' }} />
+    return <ProgressiveImage src={url} alt={username} loading="lazy" skeleton={false} style={{ width: size, height: size, borderRadius: '50%', border: '1px solid var(--border)' }} />
   }
   return (
     <div className="avatar" style={{ width: size, height: size, fontSize: size * 0.4 }}>

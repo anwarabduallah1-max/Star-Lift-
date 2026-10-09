@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { getAvatarSignedUrl } from './AvatarUpload'
+import ProgressiveImage from './ProgressiveImage'
 
 export default function Navbar() {
   const { user, profile, signOut } = useAuth()
@@ -77,7 +78,7 @@ export default function Navbar() {
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                   }}
                 >
-                  {avatarUrl ? <img src={avatarUrl} alt="Your profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : (profile?.username?.[0] ?? user.email?.[0] ?? 'U').toUpperCase()}
+                  {avatarUrl ? <ProgressiveImage src={avatarUrl} alt="Your profile" loading="lazy" skeleton={false} style={{ width: '100%', height: '100%' }} /> : (profile?.username?.[0] ?? user.email?.[0] ?? 'U').toUpperCase()}
                 </button>
                 {menuOpen && (
                   <div

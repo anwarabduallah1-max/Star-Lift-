@@ -1,5 +1,6 @@
 import type { Request } from '../lib/types'
 import { useToast } from '../context/ToastContext'
+import ProgressiveImage from './ProgressiveImage'
 
 interface Props {
   request: Request
@@ -59,18 +60,16 @@ export default function RequestCard({ request, onClick }: Props) {
         borderRadius: isGold ? '0' : '14px 14px 0 0',
       }}>
         {request.image_url ? (
-          <img
+          <ProgressiveImage
             src={request.image_url}
             alt={request.title}
             loading="lazy"
             style={{
               position: 'absolute', inset: 0, width: '100%', height: '100%',
-              objectFit: 'cover',
-              transition: 'transform 0.35s ease',
             }}
-            onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
-            onMouseEnter={e => { (e.target as HTMLImageElement).style.transform = 'scale(1.04)' }}
-            onMouseLeave={e => { (e.target as HTMLImageElement).style.transform = 'scale(1)' }}
+            onError={() => { /* image hidden by parent overflow */ }}
+            onMouseEnter={e => { (e.currentTarget.querySelector('img') as HTMLImageElement).style.transform = 'scale(1.04)' }}
+            onMouseLeave={e => { (e.currentTarget.querySelector('img') as HTMLImageElement).style.transform = 'scale(1)' }}
           />
         ) : (
           <div style={{
